@@ -3,6 +3,11 @@
             [optimus.assets :as assets]
             [optimus.optimizations :as optimizations]
             [optimus.strategies :as strategies]
+            bidi.ring
+            ring.middleware.anti-forgery
+            ring.middleware.session
+            ring.middleware.params
+            [olyp-me.web-handlers.login-handler :as login-handler]
             [olyp-me.web-handlers.home-page-handler :as home-page-handler]))
 
 (defn first-step-optimizations [assets options]
@@ -42,13 +47,41 @@
              (first-step-optimizations {})))
         (second-step-optimizations {}))))
 
+(defn wrap-login-required [handler]
+  (fn [req]
+    (if (get-in req [:session :current-user])
+      (handler req)
+      {:status 302 :headers {"Location" "/login"}})))
+
+(defn wrap-anti-forgery-token-hack [handler]
+  (fn [req]
+    (handler (assoc req :anti-forgery-token ring.middleware.anti-forgery/*anti-forgery-token*))))
+
+(defn create-actual-handler []
+  (let [public-handler
+        (bidi.ring/make-handler
+         [""
+          {:get {"/login" login-handler/login-page}
+           :post {"/login" login-handler/perform-login}}])
+
+        authenticated-handler
+        (-> (bidi.ring/make-handler
+             [""
+              {:get {"/" home-page-handler/show-home-page}}])
+            wrap-login-required)]
+
+    (->
+     #(some (fn [handler] (handler %)) [public-handler authenticated-handler])
+     wrap-anti-forgery-token-hack
+     ring.middleware.anti-forgery/wrap-anti-forgery
+     ring.middleware.session/wrap-session
+     ring.middleware.params/wrap-params)))
+
 (defn create-handler [{:keys [env]}]
   ((if (= :dev env)
       strategies/serve-live-assets
       strategies/serve-frozen-assets)
-   (fn [req]
-     (if (and (= "/" (:uri req)) (= :get (:request-method req)))
-       (render-home-page req)))
+   (create-actual-handler)
    #(get-assets env)
    optimizations/none
    {}))

@@ -7,6 +7,8 @@
                  [http-kit "2.1.16"]
                  [com.stuartsierra/component "0.2.2"]
                  [cheshire "5.3.1"]
+                 [ring/ring-anti-forgery "1.0.0"]
+                 [bidi "1.12.0"]
                  [org.clojure/tools.logging "0.3.1"]
                  [ch.qos.logback/logback-classic "1.1.2"]]
   :main olyp-me.main
