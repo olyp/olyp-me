@@ -1,27 +1,9 @@
 (ns olyp-me.web-handler
   (:require cheshire.core
-            [hiccup.page :refer [html5]]
             [optimus.assets :as assets]
             [optimus.optimizations :as optimizations]
             [optimus.strategies :as strategies]
-            [optimus.link :as link]))
-
-(defn render-home-page [req]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body
-   (html5
-    [:head
-     [:meta {:charset "utf-8"}]
-     [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
-     [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
-     [:title "Me - Oslo Lydproduksjon"]
-     (map (fn [url] [:link {:rel "stylesheet" :href url}])
-          (link/bundle-paths req ["app.css"]))]
-    [:body
-     [:div#app]
-     (map (fn [url] [:script {:src url}])
-          (link/bundle-paths req ["lib.js" "app.js"]))])})
+            [olyp-me.web-handlers.home-page-handler :as home-page-handler]))
 
 (defn first-step-optimizations [assets options]
   (-> assets
