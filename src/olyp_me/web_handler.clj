@@ -57,7 +57,12 @@
   (fn [req]
     (handler (assoc req :anti-forgery-token ring.middleware.anti-forgery/*anti-forgery-token*))))
 
-(defn create-actual-handler []
+(defn wrap-olyp-env [handler olyp-central-api-client-ctx]
+  (fn [req]
+    (handler (assoc req
+               :olyp-env {:api-ctx olyp-central-api-client-ctx}))))
+
+(defn create-actual-handler [olyp-central-api-client-ctx]
   (let [public-handler
         (bidi.ring/make-handler
          [""
@@ -72,16 +77,17 @@
 
     (->
      #(some (fn [handler] (handler %)) [public-handler authenticated-handler])
+     (wrap-olyp-env olyp-central-api-client-ctx)
      wrap-anti-forgery-token-hack
      ring.middleware.anti-forgery/wrap-anti-forgery
      ring.middleware.session/wrap-session
      ring.middleware.params/wrap-params)))
 
-(defn create-handler [{:keys [env]}]
+(defn create-handler [{:keys [env olyp-central-api-client-ctx]}]
   ((if (= :dev env)
       strategies/serve-live-assets
       strategies/serve-frozen-assets)
-   (create-actual-handler)
+   (create-actual-handler olyp-central-api-client-ctx)
    #(get-assets env)
    optimizations/none
    {}))

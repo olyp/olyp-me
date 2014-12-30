@@ -9,7 +9,9 @@
   component/Lifecycle
 
   (start [component]
-    (let [handler (olyp-me.web-handler/create-handler {:env (:env component)})
+    (let [handler (olyp-me.web-handler/create-handler
+                   {:env (:env component)
+                    :olyp-central-api-client-ctx (-> component :olyp-central-api-client-ctx)})
           server (org.httpkit.server/run-server handler {:port port})]
       (log/info (str "Started web server on port " port))
       (assoc component
