@@ -17,7 +17,7 @@
       (assoc component
         :server server)))
   (stop [component]
-    (@(:server component) :timeout (.convert TimeUnit/MILLISECONDS 1 TimeUnit/SECONDS))
+    ((:server component) :timeout (.convert TimeUnit/MILLISECONDS 1 TimeUnit/SECONDS))
     (dissoc component :server)))
 
 (defn create-web [{:keys [port]}]
