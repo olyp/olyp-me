@@ -14,9 +14,13 @@
         xhr.setRequestHeader("X-CSRF-Token", CSRF_TOKEN);
         xhr.onload = function () {
             var status = xhr.status;
-            console.log("Content-Type", xhr.getResponseHeader("Content-Type"));
             if (status >= 200 && status < 300) {
-                deferred.resolve(xhr.responseText);
+                var contentType = xhr.getResponseHeader("Content-Type");
+                if (contentType && contentType.indexOf("application/json") === 0) {
+                    deferred.resolve(JSON.parse(xhr.responseText));
+                } else {
+                    deferred.resolve(xhr.responseText);
+                }
             } else {
                 deferred.reject({status: status, body: xhr.responseText, xhr: xhr});
             }
@@ -36,15 +40,27 @@
         }
     };
 
-    var fluxStore = BOOKING_STORE_FACTORY();
-    var fluxActions = BOOKING_ACTIONS_FACTORY(fluxStore, apiUtils);
 
-    var bookingAppInst = React.render(
-        BOOKING_COMPONENTS.BookingApp({
-            fluxActions: fluxActions,
-            fluxStore: fluxStore
-        }),
-        document.getElementById("booking-app"));
+    http("GET", "/api/bookable_room").then(
+        function (bookableRoom) {
+            var initialData = {
+                bookableRoom: bookableRoom
+            };
 
-    fluxStore.setBookingAppInst(bookingAppInst);
+            var fluxStore = BOOKING_STORE_FACTORY(initialData);
+            var fluxActions = BOOKING_ACTIONS_FACTORY(fluxStore, apiUtils);
+
+            var bookingAppInst = React.render(
+                BOOKING_COMPONENTS.BookingApp({
+                    fluxActions: fluxActions,
+                    fluxStore: fluxStore
+                }),
+                document.getElementById("booking-app"));
+
+            fluxStore.setBookingAppInst(bookingAppInst);
+        },
+        function (err) {
+            alert("An unknown error occurred! " + JSON.stringify(err));
+        }
+    );
 }());

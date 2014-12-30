@@ -2,7 +2,7 @@
   (:require [org.httpkit.client :as http]
             cheshire.core))
 
-(defn get-body [res]
+(defn get-response-body [res]
   (if (.startsWith (get-in res [:headers :content-type] "") "application/json")
     (cheshire.core/parse-string (:body res))
     (:body res)))
@@ -16,16 +16,24 @@
        ~@handlers
        {:status 501 :body (str "501 Not Implemented (" status# ")")})))
 
+(defn get-request-body [body]
+  (cond
+   (map? body) (cheshire.core/generate-string body)
+   (list? body) (cheshire.core/generate-string body)
+   (vector? body) (cheshire.core/generate-string body)
+   :else body))
+
 (defn request
-  ([ctx method path])
+  ([ctx method path]
+     (request ctx method path nil))
   ([ctx method path body]
      (let [res
            @(http/request
              {:method method
-              :body (cheshire.core/generate-string body)
+              :body (get-request-body body)
               :url (str (:url ctx) path)
               :client (:httpkit-client ctx)})]
        {:status (:status res)
         :headers (:headers res)
-        :body (get-body res)
+        :body (get-response-body res)
         :httpkit-res res})))

@@ -83,7 +83,9 @@
         {:get {"/" (fn [req] {:status 302 :headers {"Location" "/booking"}})
                "/booking" #'booking-handler/booking-page
                "/invoices" #'invoices-handler/invoices-page
-               "/profile" #'profile-handler/profile-page}}])
+               "/profile" #'profile-handler/profile-page}
+         "/api" {"/bookings" {:post {"" #'booking-handler/create-booking}}
+                 "/bookable_room" {:get {"" #'booking-handler/get-bookable-room}}}}])
       wrap-login-required))
 
 (defn app-handler [req]

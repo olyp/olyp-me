@@ -4,7 +4,9 @@
     var validationError;
     var bookingAppInst;
 
-    function bookingStoreFactory() {
+    function bookingStoreFactory(initialData) {
+        var bookableRoom = initialData.bookableRoom;
+
         return {
             setBookingAppInst: function (inst) {
                 bookingAppInst = inst;
@@ -34,6 +36,10 @@
 
             getValidationError: function () {
                 return validationError;
+            },
+
+            getBookableRoom: function () {
+                return bookableRoom;
             }
         };
     }

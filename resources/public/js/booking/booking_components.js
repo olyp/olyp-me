@@ -172,6 +172,7 @@
 
             return div(
                 {className: "row"},
+                React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", this.props.fluxStore.getBookableRoom().name + "\""),
                 div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions, validationError: this.props.fluxStore.getValidationError()})),
                 div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({days: days})));
         }
