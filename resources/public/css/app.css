@@ -1,3 +1,36 @@
 a {
     cursor:pointer;
 }
+
+.calendar-grid {
+    min-width: 800px;
+}
+
+.calendar-grid-hours {
+    float: left;
+    width: 60px;
+}
+
+.calendar-grid-content {
+    overflow: hidden;
+}
+
+.calendar-grid-column {
+    float: left;
+    width: 14.2%;
+}
+
+.calendar-grid-hours-header,
+.calendar-grid-day-header {
+    height: 30px;
+}
+
+.calendar-grid-day-header {
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+}
+
+.calendar-grid-hour-cell {
+    height: 40px;
+}

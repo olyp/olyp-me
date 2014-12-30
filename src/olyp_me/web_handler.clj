@@ -8,7 +8,9 @@
             ring.middleware.session
             ring.middleware.params
             [olyp-me.web-handlers.login-handler :as login-handler]
-            [olyp-me.web-handlers.home-page-handler :as home-page-handler]))
+            [olyp-me.web-handlers.booking-handler :as booking-handler]
+            [olyp-me.web-handlers.invoices-handler :as invoices-handler]
+            [olyp-me.web-handlers.profile-handler :as profile-handler]))
 
 (defn first-step-optimizations [assets options]
   (-> assets
@@ -30,11 +32,11 @@
 
 (defn get-optimizable-assets []
   (concat
-   (assets/load-bundle "public" "lib.js" [])
+   (assets/load-bundle "public" "lib.js" ["/js/lib/moment-2.8.4.js"])
    (assets/load-bundle "public" "app.css" ["/bootstrap/css/bootstrap.css"
                                            "/bootstrap/css/bootstrap-theme.css"
                                            "/css/app.css"])
-   (assets/load-bundle "public" "app.js" ["/js/app.js"])))
+   (assets/load-bundle "public" "booking.js" ["/js/booking.js"])))
 
 (defn get-assets [env]
   (if (= :dev env)
@@ -62,26 +64,32 @@
     (handler (assoc req
                :olyp-env {:api-ctx olyp-central-api-client-ctx}))))
 
+(def app-public-handler
+  (bidi.ring/make-handler
+   [""
+    {:get {"/login" #'login-handler/login-page}
+     :post {"/login" #'login-handler/perform-login}}]))
+
+(def app-authenticated-handler
+  (-> (bidi.ring/make-handler
+       [""
+        {:get {"/" (fn [req] {:status 302 :headers {"Location" "/booking"}})
+               "/booking" #'booking-handler/booking-page
+               "/invoices" #'invoices-handler/invoices-page
+               "/profile" #'profile-handler/profile-page}}])
+      wrap-login-required))
+
+(defn app-handler [req]
+  (some (fn [handler] (handler req)) [app-public-handler app-authenticated-handler]))
+
 (defn create-actual-handler [olyp-central-api-client-ctx]
-  (let [public-handler
-        (bidi.ring/make-handler
-         [""
-          {:get {"/login" #'login-handler/login-page}
-           :post {"/login" #'login-handler/perform-login}}])
-
-        authenticated-handler
-        (-> (bidi.ring/make-handler
-             [""
-              {:get {"/" #'home-page-handler/show-home-page}}])
-            wrap-login-required)]
-
-    (->
-     #(some (fn [handler] (handler %)) [public-handler authenticated-handler])
-     (wrap-olyp-env olyp-central-api-client-ctx)
-     wrap-anti-forgery-token-hack
-     ring.middleware.anti-forgery/wrap-anti-forgery
-     ring.middleware.session/wrap-session
-     ring.middleware.params/wrap-params)))
+  (->
+   app-handler
+   (wrap-olyp-env olyp-central-api-client-ctx)
+   wrap-anti-forgery-token-hack
+   ring.middleware.anti-forgery/wrap-anti-forgery
+   ring.middleware.session/wrap-session
+   ring.middleware.params/wrap-params))
 
 (defn create-handler [{:keys [env olyp-central-api-client-ctx]}]
   ((if (= :dev env)
