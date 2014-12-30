@@ -15,6 +15,8 @@
      (map (fn [url] [:link {:rel "stylesheet" :href url}])
           (link/bundle-paths req ["app.css"]))]
     [:body
-     [:div#app]
+     [:div.navbar.navbar-default
+      [:div {:id "navbar-target" :class "container-fluid"}]]
+     [:div {:class "container-fluid"} "Content here..."]
      (map (fn [url] [:script {:src url}])
           (link/bundle-paths req ["lib.js" "app.js"]))])})
