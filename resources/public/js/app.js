@@ -20,7 +20,7 @@
         render: function () {
             return div(
                 null,
-                div({className: "nabar-header"},
+                div({className: "navbar-header"},
                     a({className: "navbar-brand", onClick: this.logoClicked}, "Olyp")),
                 ul({className: "nav navbar-nav"},
                    li(null, a({onClick: this.bookingClicked}, "Booking")),
