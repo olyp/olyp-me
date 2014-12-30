@@ -13,14 +13,15 @@
     (map (fn [url] [:script {:src url}])
          (link/bundle-paths req ["lib.js" "booking.js"])))})
 
-(defn create-booking [{{:keys [api-ctx]} :olyp-env :keys [body]}]
+(defn create-booking [{{:keys [api-ctx]} :olyp-env :keys [body] {:keys [current-user]} :session}]
   (central-api-client/handle-res
-   (central-api-client/request api-ctx :post "/bookings" body) res
-   201 {:status 302
-        :headers {"Location" "/"}}
-   422 {:status 200
+   (central-api-client/request api-ctx :post (str "/users/" (current-user "id") "/bookings") body) res
+   201 {:status 200
         :headers {"Content-Type" "application/json"}
-        :body "{\"error\":\"wat\"}"}))
+        :body "{}"}
+   422 {:status 422
+        :headers {"Content-Type" "application/json"}
+        :body (cheshire.core/generate-string (:body res))}))
 
 (defn get-bookable-room [{{:keys [api-ctx]} :olyp-env}]
   (central-api-client/handle-res

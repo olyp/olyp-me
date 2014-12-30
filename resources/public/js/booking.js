@@ -35,8 +35,8 @@
     }
 
     var apiUtils = {
-        createBooking: function (from, to) {
-            return http("POST", "/api/bookings", {from: from, to: to});
+        createBooking: function (payload) {
+            return http("POST", "/api/bookings", payload);
         }
     };
 

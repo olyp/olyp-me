@@ -28,7 +28,13 @@
                 var fromDate = dates[0]
                 var toDate = dates[1];
 
-                apiUtils.createBooking(fromDate.toISOString(), toDate.toISOString()).then(
+                var payload = {
+                    from: fromDate.toISOString(),
+                    to: toDate.toISOString(),
+                    bookable_room_id: fluxStore.getBookableRoom().id
+                }
+
+                apiUtils.createBooking(payload).then(
                     function () {
                         fluxStore.clearValidationError();
                         // TODO: Update grid
