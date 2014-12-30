@@ -7,11 +7,10 @@
 
   (start [component]
     (assoc component
-      :url url
       :httpkit-client (HttpClient.)))
   (stop [component]
     (.stop (:httpkit-client component))
-    (dissoc component :url :httpkit-client)))
+    (dissoc component :httpkit-client)))
 
 (defn create-ctx [{:keys [url]}]
   (OlypCentralApiClientCtx. url))
