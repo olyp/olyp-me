@@ -4,7 +4,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [optimus "0.15.0"]
                  [hiccup "1.0.5"]
-                 [http-kit "2.1.16"]
+                 [http-kit "2.1.17"]
                  [com.stuartsierra/component "0.2.2"]
                  [cheshire "5.3.1"]
                  [ring/ring-anti-forgery "1.0.0"]
