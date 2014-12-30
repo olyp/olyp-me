@@ -6,16 +6,53 @@
     var a = React.DOM.a;
     var span = React.DOM.span;
 
+    var BookingFormDateTimeFieldsClass = React.createClass({
+        componentDidMount: function () {
+            var container = this.getDOMNode();
+
+            var rowWrapper = document.createElement("div");
+            rowWrapper.className = "row";
+
+            var datePickerCell = document.createElement("div");
+            datePickerCell.className = "col-xs-7";
+            rowWrapper.appendChild(datePickerCell);
+
+            var timePickerCell = document.createElement("div");
+            timePickerCell.className = "col-xs-5";
+            rowWrapper.appendChild(timePickerCell);
+
+            var dateInput = document.createElement("input");
+            dateInput.type = "text";
+            dateInput.className = "form-control";
+            dateInput.value = this.props.initialDate.format("DD.MM.YYYY");
+            jQuery(dateInput).datepicker({format: "dd.mm.yyyy", weekStart: 1});
+            datePickerCell.appendChild(dateInput);
+
+            var timeInput = document.createElement("input");
+            timeInput.type = "text";
+            timeInput.className = "form-control";
+            timeInput.value = this.props.initialDate.format("HH:mm");
+            timePickerCell.appendChild(timeInput);
+
+            container.appendChild(rowWrapper);
+        },
+
+        render: function () {
+            return div();
+        }
+    });
+    var BookingFormDateTimeFields = React.createFactory(BookingFormDateTimeFieldsClass);
+
     var BookingFormClass = React.createClass({
         render: function () {
             return form(
                 null,
                 div({className: "form-group"},
-                   label(null, "From"),
-                   input({type: "text", className: "form-control"})),
+                    label(null, "From"),
+                    BookingFormDateTimeFields({initialDate: moment().hour(14).minute(0)})),
                 div({className: "form-group"},
                     label(null, "To"),
-                    input({type: "text", className: "form-control"})),
+                    BookingFormDateTimeFields({initialDate: moment().hour(15).minute(0)})),
                 input({type: "button", value: "Book now!", className: "btn btn-default"}));
         }
     });
