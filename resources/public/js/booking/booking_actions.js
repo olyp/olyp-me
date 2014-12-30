@@ -32,6 +32,7 @@
                     function () {
                         fluxStore.clearValidationError();
                         // TODO: Update grid
+                        // TODO: Reset form
                     },
                     function (res) {
                         fluxStore.setValidationError(getValidationErrorFromRes(res));
