@@ -39,7 +39,10 @@
                                            "/bootstrap/css/bootstrap-theme.css"
                                            "/bootstrap-datepicker/css/datepicker.css"
                                            "/css/app.css"])
-   (assets/load-bundle "public" "booking.js" ["/js/booking.js"])))
+   (assets/load-bundle "public" "booking.js" ["/js/booking/booking_components.js"
+                                              "/js/booking/booking_store.js"
+                                              "/js/booking/booking_actions.js"
+                                              "/js/booking.js"])))
 
 (defn get-assets [env]
   (if (= :dev env)
