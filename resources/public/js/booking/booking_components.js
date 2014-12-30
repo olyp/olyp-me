@@ -78,9 +78,20 @@
             this.props.fluxActions.submitBookingForm();
         },
 
+        getValidationError: function () {
+            var msg = this.props.validationError;
+            if (msg) {
+                return div(
+                    {className: "panel panel-danger"},
+                    div({className: "panel-heading"},
+                        React.DOM.h3({className: "panel-title"}, msg)));
+            }
+        },
+
         render: function () {
             return form(
                 {onSubmit: this.onSubmit},
+                this.getValidationError(),
                 div({className: "form-group"},
                     label(null, "From"),
                     BookingFormDateTimeFields({fluxActions: this.props.fluxActions, name: "from", initialDate: moment().hour(14).minute(0)})),
@@ -161,7 +172,7 @@
 
             return div(
                 {className: "row"},
-                div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions})),
+                div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions, validationError: this.props.fluxStore.getValidationError()})),
                 div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({days: days})));
         }
     });

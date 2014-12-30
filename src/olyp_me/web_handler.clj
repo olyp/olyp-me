@@ -34,6 +34,7 @@
   (concat
    (assets/load-bundle "public" "lib.js" ["/js/lib/moment-2.8.4.js"
                                           "/js/lib/jquery-2.1.3.js"
+                                          "/js/lib/when-3.6.4.js"
                                           "/bootstrap-datepicker/js/bootstrap-datepicker.js"])
    (assets/load-bundle "public" "app.css" ["/bootstrap/css/bootstrap.css"
                                            "/bootstrap/css/bootstrap-theme.css"
