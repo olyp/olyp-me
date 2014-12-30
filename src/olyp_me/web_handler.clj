@@ -66,13 +66,13 @@
   (let [public-handler
         (bidi.ring/make-handler
          [""
-          {:get {"/login" login-handler/login-page}
-           :post {"/login" login-handler/perform-login}}])
+          {:get {"/login" #'login-handler/login-page}
+           :post {"/login" #'login-handler/perform-login}}])
 
         authenticated-handler
         (-> (bidi.ring/make-handler
              [""
-              {:get {"/" home-page-handler/show-home-page}}])
+              {:get {"/" #'home-page-handler/show-home-page}}])
             wrap-login-required)]
 
     (->
