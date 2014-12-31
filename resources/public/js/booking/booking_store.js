@@ -1,10 +1,9 @@
 (function (GLOBAL) {
-    var fromDateTimeFieldGetter;
-    var toDateTimeFieldGetter;
-    var validationError;
-    var bookingAppInst;
-
     function bookingStoreFactory(initialData) {
+        var fromDateTimeFieldGetter;
+        var toDateTimeFieldGetter;
+        var validationError;
+        var bookingAppInst;
         var bookableRoom = initialData.bookableRoom;
 
         return {
