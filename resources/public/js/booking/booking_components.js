@@ -112,10 +112,14 @@
     }
 
     var CalendarGridClass = React.createClass({
+        mixins: [FluxChildComponentMixin],
+
         prevWeekButtonClicked: function () {
+            this.props.fluxActions.moveToPreviousWeek();
         },
 
         nextWeekButtonClicked: function () {
+            this.props.fluxActions.moveToNextWeek();
         },
 
         render: function () {
@@ -163,7 +167,7 @@
                 {className: "row"},
                 React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", this.props.fluxStore.getBookableRoom().name + "\""),
                 div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions, validationError: this.props.fluxStore.getValidationError()})),
-                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({days: this.props.fluxStore.getDays()})));
+                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({fluxActions: this.props.fluxActions, days: this.props.fluxStore.getDays()})));
         }
     });
     var BookingApp = React.createFactory(BookingAppClass);

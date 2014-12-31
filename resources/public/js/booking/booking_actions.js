@@ -44,6 +44,14 @@
                         fluxStore.setValidationError(getValidationErrorFromRes(res));
                     }
                 );
+            },
+
+            moveToPreviousWeek: function () {
+                fluxStore.changeWeek(-1);
+            },
+
+            moveToNextWeek: function () {
+                fluxStore.changeWeek(1);
             }
         };
 

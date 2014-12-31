@@ -19,9 +19,20 @@
         var validationError;
         var bookingAppInst;
         var bookableRoom = initialData.bookableRoom;
+        var day = moment().day("Monday");
         var days = getDaysForFirstDay(moment().day("Monday"));
 
         return {
+            changeWeek: function (step) {
+                day = day.clone().add(step * 7, "days");
+                days = getDaysForFirstDay(day);
+                bookingAppInst.forceUpdate();
+            },
+
+            getDay: function () {
+                return day;
+            },
+
             getDays: function () {
                 return days;
             },
