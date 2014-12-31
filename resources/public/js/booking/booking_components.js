@@ -159,22 +159,11 @@
         mixin: [FluxRootComponentMixin],
 
         render: function () {
-            var monday = moment().day("Monday");
-            var days = [
-                {label: "Mon", inst: monday.clone()},
-                {label: "Tue", inst: monday.clone().day(2)},
-                {label: "Wed", inst: monday.clone().day(3)},
-                {label: "Thu", inst: monday.clone().day(4)},
-                {label: "Fri", inst: monday.clone().day(5)},
-                {label: "Sat", inst: monday.clone().day(6)},
-                {label: "Sun", inst: monday.clone().day(7)}
-            ];
-
             return div(
                 {className: "row"},
                 React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", this.props.fluxStore.getBookableRoom().name + "\""),
                 div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions, validationError: this.props.fluxStore.getValidationError()})),
-                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({days: days})));
+                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({days: this.props.fluxStore.getDays()})));
         }
     });
     var BookingApp = React.createFactory(BookingAppClass);
