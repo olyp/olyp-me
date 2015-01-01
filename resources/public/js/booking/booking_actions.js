@@ -8,6 +8,19 @@
     }
 
     function bookingActionsFactory(fluxStore, apiUtils) {
+        function fetchBookings(day) {
+            apiUtils.getBookings(fluxStore.getBookableRoom().id, day).then(
+                function (res) {
+                    console.log(res);
+                    // fluxStore.setBookingsForDay();
+                },
+                function (e) {
+                    alert("An unknown error occurred: " + JSON.stringify(e));
+                });
+        }
+
+        fetchBookings(fluxStore.getDay());
+
         return {
             setBookingFormDateTimeFields: function (which, getter) {
                 if (which === "from") {
@@ -48,10 +61,12 @@
 
             moveToPreviousWeek: function () {
                 fluxStore.changeWeek(-1);
+                fetchBookings(fluxStore.getDay());
             },
 
             moveToNextWeek: function () {
                 fluxStore.changeWeek(1);
+                fetchBookings(fluxStore.getDay());
             }
         };
 

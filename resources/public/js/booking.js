@@ -37,6 +37,10 @@
     var apiUtils = {
         createBooking: function (payload) {
             return http("POST", "/api/bookings", payload);
+        },
+
+        getBookings: function (bookableRoomId, day) {
+            return http("GET", "/api/bookable_rooms/" + bookableRoomId + "/bookings/" + day.format("DD.MM.YYYY"));
         }
     };
 

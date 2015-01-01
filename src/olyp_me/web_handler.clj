@@ -85,7 +85,10 @@
                "/invoices" #'invoices-handler/invoices-page
                "/profile" #'profile-handler/profile-page}
          "/api" {"/bookings" {:post {"" #'booking-handler/create-booking}}
-                 "/bookable_room" {:get {"" #'booking-handler/get-bookable-room}}}}])
+                 "/bookable_room" {:get {"" #'booking-handler/get-bookable-room}}
+                 "/bookable_rooms/" {[[#"[^\/]+" :bookable-room-id] ""]
+                                     {"/bookings/" {[[#"[^\/]+" :date] ""]
+                                                    {:get {""  #'booking-handler/bookings-for-date}}}}}}}])
       wrap-login-required))
 
 (defn app-handler [req]

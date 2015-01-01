@@ -33,3 +33,10 @@
               :headers {"Content-Type" "application/json"}
               :body (cheshire.core/generate-string (first body))}
              {:status 500})))))
+
+(defn bookings-for-date [{{:keys [api-ctx]} :olyp-env :keys [route-params]}]
+  (central-api-client/handle-res
+   (central-api-client/request api-ctx :get (str "/bookable_rooms/" (:bookable-room-id route-params) "/bookings/" (:date route-params))) res
+   200 {:status 200
+        :headers {"Content-Type" "application/json"}
+        :body (cheshire.core/generate-string (:body res))}))
