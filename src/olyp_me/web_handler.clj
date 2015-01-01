@@ -33,6 +33,7 @@
 (defn get-optimizable-assets []
   (concat
    (assets/load-bundle "public" "lib.js" ["/js/lib/moment-2.8.4.js"
+                                          "/js/lib/moment-timezone-with-data-0.2.5.js"
                                           "/js/lib/jquery-2.1.3.js"
                                           "/js/lib/when-3.6.4.js"
                                           "/bootstrap-datepicker/js/bootstrap-datepicker.js"])

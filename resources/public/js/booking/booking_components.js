@@ -111,6 +111,22 @@
         }
     }
 
+    function bookingIntersects(booking, dayStart, dayEnd) {
+        return (booking.from.valueOf() <= dayEnd.valueOf()) && (dayStart.valueOf() <= booking.to.valueOf());
+    }
+
+
+    var HOUR_HEIGHT = 40;
+
+    function getOffset(offset) {
+        var hoursOffset = Math.floor(offset);
+        if (hoursOffset === 0) {
+            return 0;
+        } else {
+            return hoursOffset * HOUR_HEIGHT + ((offset % hoursOffset) * HOUR_HEIGHT);
+        }
+    }
+
     var CalendarGridClass = React.createClass({
         mixins: [FluxChildComponentMixin],
 
@@ -128,6 +144,8 @@
                 hours.push(i);
             }
 
+            var bookings = this.props.bookings.slice(0);
+
             return div(
                 {className: "calendar-grid"},
                 div({className: "calendar-grid-hours"},
@@ -144,16 +162,57 @@
                     })),
                 div({className: "calendar-grid-content"},
                     this.props.days.map(function (day) {
+                        var dayStart = day.inst;
+                        var dayEnd = day.inst.clone().endOf("day");
+
+                        var bookingsForDay = [];
+                        if (bookings.length > 0 && bookingIntersects(bookings[0], dayStart, dayEnd)) {
+
+                            var lastIntersectingBooking;
+                            for (var i = 1; i < bookings.length; i++) {
+                                if (!bookingIntersects(bookings[i], dayStart, dayEnd)) {
+                                    lastIntersectingBooking = i;
+                                    break;
+                                }
+                            }
+
+                            bookingsForDay = bookings.slice(0, lastIntersectingBooking);
+                            bookings = bookings.slice(lastIntersectingBooking);
+                        }
+
                         return div(
                             {key: "day-" + day.label, className: "calendar-grid-column"},
                             div(
                                 {className: "calendar-grid-day-header"},
                                 day.label, " ", day.inst.format("DD.MM")),
-                            hours.map(function (hour) {
-                                return div(
-                                    {key: "hour-" + hour, className: "calendar-grid-hour-cell"},
-                                    "-");
-                            }));
+                            div(
+                                {className: "calendar-grid-day-bookings"},
+                                hours.map(function (hour) {
+                                    return div(
+                                        {key: "hour-" + hour, className: "calendar-grid-hour-cell"});
+                                }),
+                                bookingsForDay.map(function (booking) {
+                                    var dayStartHourOffset = (booking.from.valueOf() - dayStart.valueOf()) / 1000 / 60 / 60;
+                                    var bookingLengthOffset = (booking.to.valueOf() - booking.from.valueOf()) / 1000 / 60 / 60;
+                                    var classNames = ["calendar-grid-booking"];
+
+                                    var topOffset = getOffset(dayStartHourOffset);
+                                    var bottomOffset = topOffset + getOffset(bookingLengthOffset);
+
+                                    if (topOffset < 0) {
+                                        classNames.push("calendar-grid-booking-overlaps-previous");
+                                    }
+
+                                    if (bottomOffset > (HOUR_HEIGHT * 24)) {
+                                        classNames.push("calendar-grid-booking-overlaps-next");
+                                    }
+
+                                    console.log(classNames);
+
+                                    return div({key: "booking-" + topOffset + "-" + bottomOffset, className: classNames.join(" "), style: {top: Math.max(topOffset, 0) + "px", bottom: ((HOUR_HEIGHT * 24) - bottomOffset) + "px"}}, "a booking!");
+                                })
+                            )
+                        );
                     })));
         }
     });
@@ -167,7 +226,7 @@
                 {className: "row"},
                 React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", this.props.fluxStore.getBookableRoom().name + "\""),
                 div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions, validationError: this.props.fluxStore.getValidationError()})),
-                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({fluxActions: this.props.fluxActions, days: this.props.fluxStore.getDays()})));
+                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({fluxActions: this.props.fluxActions, days: this.props.fluxStore.getDays(), bookings: this.props.fluxStore.getBookings()})));
         }
     });
     var BookingApp = React.createFactory(BookingAppClass);

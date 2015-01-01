@@ -20,12 +20,14 @@
         var bookingAppInst;
         var bookableRoom = initialData.bookableRoom;
         var day = moment().day("Monday");
-        var days = getDaysForFirstDay(moment().day("Monday"));
+        var days = getDaysForFirstDay(moment().tz("Europe/Oslo").day("Monday").startOf("day"));
+        var bookings = [];
 
         return {
             changeWeek: function (step) {
-                day = day.clone().add(step * 7, "days");
+                day = day.clone().add(step * 7, "days").startOf("day");
                 days = getDaysForFirstDay(day);
+                bookings = [];
                 bookingAppInst.forceUpdate();
             },
 
@@ -35,6 +37,27 @@
 
             getDays: function () {
                 return days;
+            },
+
+            setBookingsForDay: function (bookingsDay, newBookings) {
+                if (bookingsDay.isSame(day)) {
+                    bookings = newBookings.map(function (booking) {
+                        return {
+                            from: moment(booking.from).tz("Europe/Oslo"),
+                            to: moment(booking.to).tz("Europe/Oslo"),
+                            user: booking.user,
+                            bookableRoom: booking["bookable-room"]
+                        }
+                    });;
+                    bookings.sort(function (a, b) {
+                        return a.from.valueOf() - b.from.valueOf();
+                    });
+                    bookingAppInst.forceUpdate();
+                }
+            },
+
+            getBookings: function () {
+                return bookings;
             },
 
             setBookingAppInst: function (inst) {
