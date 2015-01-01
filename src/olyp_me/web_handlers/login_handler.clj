@@ -1,7 +1,7 @@
 (ns olyp-me.web-handlers.login-handler
   (:require [hiccup.page :refer [html5]]
             [optimus.link :as link]
-            [olyp-me.olyp-central-api-client :as central-api-client]))
+            [olyp-app-utils.olyp-central-api-client :as central-api-client]))
 
 (defn login-page [req]
   {:status 200

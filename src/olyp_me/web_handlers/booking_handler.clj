@@ -1,7 +1,7 @@
 (ns olyp-me.web-handlers.booking-handler
   (:require [olyp-me.web-handlers.layout :refer [layout]]
             [optimus.link :as link]
-            [olyp-me.olyp-central-api-client :as central-api-client]))
+            [olyp-app-utils.olyp-central-api-client :as central-api-client]))
 
 (defn booking-page [req]
   {:status 200

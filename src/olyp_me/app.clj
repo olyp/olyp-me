@@ -1,7 +1,7 @@
 (ns olyp-me.app
   (:require [com.stuartsierra.component :as component]
             [olyp-me.components.web :as web]
-            [olyp-me.components.olyp-central-api-client-ctx :as olyp-central-api-client-ctx]))
+            [olyp-app-utils.components.olyp-central-api-client-ctx :as olyp-central-api-client-ctx]))
 
 (defn create-system [{:keys [olyp-central-api web env]}]
   (component/system-map
