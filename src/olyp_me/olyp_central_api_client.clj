@@ -1,6 +1,7 @@
 (ns olyp-me.olyp-central-api-client
   (:require [org.httpkit.client :as http]
-            cheshire.core))
+            cheshire.core
+            [clojure.tools.logging :as log]))
 
 (defn get-response-body [res]
   (if (.startsWith (get-in res [:headers :content-type] "") "application/json")
@@ -14,7 +15,9 @@
          status# (:status ~res-binding)]
      (case status#
        ~@handlers
-       {:status 501 :body (str "501 Not Implemented (" status# ")")})))
+       (do
+         (log/error (str "Unhandled central api request:" ~res-binding))
+         {:status 501 :body (str "501 Not Implemented (" status# ")")}))))
 
 (defn get-request-body [body]
   (cond
