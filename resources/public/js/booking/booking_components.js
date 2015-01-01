@@ -207,7 +207,7 @@
                                         classNames.push("calendar-grid-booking-overlaps-next");
                                     }
 
-                                    return div({key: "booking-" + topOffset + "-" + bottomOffset, className: classNames.join(" "), style: {top: Math.max(topOffset, 0) + "px", bottom: ((HOUR_HEIGHT * 24) - bottomOffset) + "px"}}, "a booking!");
+                                    return div({key: "booking-" + topOffset + "-" + bottomOffset, className: classNames.join(" "), style: {top: Math.max(topOffset, 0) + "px", bottom: ((HOUR_HEIGHT * 24) - bottomOffset) + "px"}}, booking.user.name);
                                 })
                             )
                         );
