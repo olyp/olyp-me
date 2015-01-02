@@ -91,7 +91,8 @@
         {:get {"/" (fn [req] {:status 302 :headers {"Location" "/booking"}})
                "/booking" #'booking-handler/booking-page
                "/invoices" #'invoices-handler/invoices-page
-               "/profile" #'profile-handler/profile-page}
+               "/profile" #'profile-handler/profile-page
+               "/logout" #'profile-handler/log-out}
          "/api" {"/bookings" {:post {"" #'booking-handler/create-booking}}
                  "/bookable_room" {:get {"" #'booking-handler/get-bookable-room}}
                  "/bookable_rooms/" {[[#"[^\/]+" :bookable-room-id] ""]

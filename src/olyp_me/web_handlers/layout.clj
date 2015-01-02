@@ -20,5 +20,6 @@
        [:li [:a {:href "/booking"} "Booking"]]
        [:li [:a {:href "/invoices"} "Invoices"]]]
       [:ul.nav.navbar-nav.navbar-right
+       [:li [:a {:href "/logout"} "Log out"]]
        [:li [:a {:href "/profile"} "My profile"]]]]]
     [:div {:class "container-fluid"} contents]]))

@@ -8,3 +8,8 @@
    (layout
     req
     [:p "Profile!"])})
+
+(defn log-out [req]
+  {:status 302
+   :headers {"Location" "/"}
+   :session {:current-user nil}})
