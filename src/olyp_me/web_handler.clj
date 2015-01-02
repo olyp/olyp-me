@@ -11,7 +11,8 @@
             [olyp-me.web-handlers.login-handler :as login-handler]
             [olyp-me.web-handlers.booking-handler :as booking-handler]
             [olyp-me.web-handlers.invoices-handler :as invoices-handler]
-            [olyp-me.web-handlers.profile-handler :as profile-handler])
+            [olyp-me.web-handlers.profile-handler :as profile-handler]
+            [olyp-app-utils.olyp-central-api-client :as central-api-client])
   (:import [java.util.concurrent TimeUnit]))
 
 (defn first-step-optimizations [assets options]
@@ -61,9 +62,12 @@
         (second-step-optimizations {}))))
 
 (defn wrap-login-required [handler]
-  (fn [req]
-    (if (get-in req [:session :current-user])
-      (handler req)
+  (fn [{{:keys [api-ctx]} :olyp-env :as req}]
+    (if-let [session-user (get-in req [:session :current-user])]
+      (let [user-res (central-api-client/request api-ctx :get (str "/users/" (session-user "id")))]
+        (if (= 200 (:status user-res))
+          (handler req)
+          {:status 302 :headers {"Location" "/login"} :session {:current-user nil}}))
       {:status 302 :headers {"Location" "/login"}})))
 
 (defn wrap-anti-forgery-token-hack [handler]
