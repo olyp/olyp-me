@@ -36,6 +36,7 @@
                                           "/js/lib/moment-timezone-with-data-0.2.5.js"
                                           "/js/lib/jquery-2.1.3.js"
                                           "/js/lib/when-3.6.4.js"
+                                          "/js/olyp_app_utils/http.js"
                                           "/bootstrap-datepicker/js/bootstrap-datepicker.js"])
    (assets/load-bundle "public" "app.css" ["/bootstrap/css/bootstrap.css"
                                            "/bootstrap/css/bootstrap-theme.css"
