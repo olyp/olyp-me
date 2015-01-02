@@ -11,7 +11,8 @@
   (start [component]
     (let [handler (olyp-me.web-handler/create-handler
                    {:env (:env component)
-                    :olyp-central-api-client-ctx (-> component :olyp-central-api-client-ctx)})
+                    :olyp-central-api-client-ctx (-> component :olyp-central-api-client-ctx)
+                    :cookie-secret (:cookie-secret component)})
           server (org.httpkit.server/run-server handler {:port port})]
       (log/info (str "Started web server on port " port))
       (assoc component
