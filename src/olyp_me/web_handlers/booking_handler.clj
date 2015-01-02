@@ -40,3 +40,11 @@
    200 {:status 200
         :headers {"Content-Type" "application/json"}
         :body (cheshire.core/generate-string (:body res))}))
+
+(defn delete-booking [{{:keys [api-ctx]} :olyp-env :keys [route-params session]}]
+  (let [booking-id (:booking-id route-params)
+        user-id (get-in session [:current-user "id"])]
+    (central-api-client/request api-ctx :delete (str "/users/" user-id "/bookings/" booking-id))
+    {:status 200
+     :headers {"Content-Type" "application/json"}
+     :body "{}"}))

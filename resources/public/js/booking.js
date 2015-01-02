@@ -15,9 +15,12 @@
 
         getBookings: function (bookableRoomId, day) {
             return http("GET", "/api/bookable_rooms/" + bookableRoomId + "/bookings/" + day.format("DD.MM.YYYY"));
+        },
+
+        deleteBooking: function (bookingId) {
+            return http("DELETE", "/api/bookings/" + bookingId);
         }
     };
-
 
     http("GET", "/api/bookable_room").then(
         function (bookableRoom) {
@@ -25,7 +28,7 @@
                 bookableRoom: bookableRoom
             };
 
-            var fluxStore = BOOKING_STORE_FACTORY(initialData);
+            var fluxStore = BOOKING_STORE_FACTORY(bookableRoom, CURRENT_USER_ID);
             var fluxActions = BOOKING_ACTIONS_FACTORY(fluxStore, apiUtils);
 
             var bookingAppInst = React.render(

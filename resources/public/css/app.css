@@ -67,3 +67,15 @@ a {
 .calendar-grid-booking-overlaps-next {
     border-bottom: none;
 }
+
+.calendar-grid-booking-delete-button {
+    position: absolute;
+    color: rgb(160, 30, 8);
+    bottom: 0px;
+    right: 0px;
+}
+
+.calendar-grid-booking-delete-button:hover {
+    text-decoration: none;
+    color: rgb(160, 30, 8);
+}

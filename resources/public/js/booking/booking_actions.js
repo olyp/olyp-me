@@ -67,6 +67,19 @@
             moveToNextWeek: function () {
                 fluxStore.changeWeek(1);
                 fetchBookings();
+            },
+
+            deleteBooking: function (booking) {
+                if (confirm("Are you sure you want to delete this booking?")) {
+                    apiUtils.deleteBooking(booking.id).then(
+                        function () {
+                            fetchBookings();
+                        },
+                        function (e) {
+                            alert("An unknown error occurred: " + JSON.stringify(e));
+                        }
+                    )
+                }
             }
         };
 

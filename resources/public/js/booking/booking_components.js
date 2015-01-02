@@ -103,6 +103,19 @@
     });
     var BookingForm = React.createFactory(BookingFormClass);
 
+    var CalendarGridBookingDeleteButtonClass = React.createClass({
+        mixins: [FluxChildComponentMixin],
+
+        onClick: function () {
+            this.props.fluxActions.deleteBooking(this.props.booking);
+        },
+
+        render: function () {
+            return a({onClick: this.onClick, className: "calendar-grid-booking-delete-button"}, span({className: "glyphicon glyphicon-trash"}))
+        }
+    });
+    var CalendarGridBookingDeleteButton = React.createFactory(CalendarGridBookingDeleteButtonClass);
+
     function formatHour(hour) {
         if (hour < 10) {
             return "0" + hour + ":00";
@@ -136,6 +149,12 @@
 
         nextWeekButtonClicked: function () {
             this.props.fluxActions.moveToNextWeek();
+        },
+
+        getDeleteButton: function (booking) {
+            if (this.props.currentUserId === booking.user.id) {
+                return CalendarGridBookingDeleteButton({fluxActions: this.props.fluxActions, booking: booking})
+            }
         },
 
         render: function () {
@@ -216,12 +235,13 @@
                                                 bottom: ((HOUR_HEIGHT * 24) - bottomOffset) + "px"
                                             }
                                         },
-                                        booking.user.name
+                                        div(null, booking.user.name),
+                                        div(null, this.getDeleteButton(booking))
                                     );
-                                })
+                                }.bind(this))
                             )
                         );
-                    })));
+                    }.bind(this))));
         }
     });
     var CalendarGrid = React.createFactory(CalendarGridClass);
@@ -234,7 +254,7 @@
                 {className: "row"},
                 React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", this.props.fluxStore.getBookableRoom().name + "\""),
                 div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions, validationError: this.props.fluxStore.getValidationError()})),
-                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({fluxActions: this.props.fluxActions, days: this.props.fluxStore.getDays(), bookings: this.props.fluxStore.getBookings()})));
+                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({fluxActions: this.props.fluxActions, days: this.props.fluxStore.getDays(), bookings: this.props.fluxStore.getBookings(), currentUserId: this.props.fluxStore.getCurrentUserId()})));
         }
     });
     var BookingApp = React.createFactory(BookingAppClass);

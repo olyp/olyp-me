@@ -13,17 +13,21 @@
         });
     }
 
-    function bookingStoreFactory(initialData) {
+    function bookingStoreFactory(bookableRoom, currentUserId) {
         var fromDateTimeFieldGetter;
         var toDateTimeFieldGetter;
         var validationError;
         var bookingAppInst;
-        var bookableRoom = initialData.bookableRoom;
+        var bookableRoom = bookableRoom;
         var day = moment().day("Monday");
         var days = getDaysForFirstDay(moment().tz("Europe/Oslo").day("Monday").startOf("day"));
         var bookings = [];
 
         return {
+            getCurrentUserId: function () {
+                return currentUserId;
+            },
+
             changeWeek: function (step) {
                 day = day.clone().add(step * 7, "days").startOf("day");
                 days = getDaysForFirstDay(day);
@@ -43,6 +47,7 @@
                 if (bookingsDay.isSame(day)) {
                     bookings = newBookings.map(function (booking) {
                         return {
+                            id: booking.id,
                             from: moment(booking.from).tz("Europe/Oslo"),
                             to: moment(booking.to).tz("Europe/Oslo"),
                             user: booking.user,

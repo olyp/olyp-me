@@ -1,6 +1,7 @@
 (ns olyp-me.web-handlers.layout
   (:require [hiccup.page :refer [html5]]
-            [optimus.link :as link]))
+            [optimus.link :as link]
+            cheshire.core))
 
 (defn layout [req & contents]
   (html5
@@ -12,6 +13,7 @@
     (map (fn [url] [:link {:rel "stylesheet" :href url}])
          (link/bundle-paths req ["app.css"]))]
    [:body
+    [:script {:type "text/javascript"} (str "var CURRENT_USER_ID = " (cheshire.core/generate-string (get-in req [:session :current-user "id"])))]
     [:div.navbar.navbar-default
      [:div.container-fluid
       [:div.navbar-header
