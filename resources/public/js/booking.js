@@ -24,10 +24,6 @@
 
     http("GET", "/api/bookable_room").then(
         function (bookableRoom) {
-            var initialData = {
-                bookableRoom: bookableRoom
-            };
-
             var fluxStore = BOOKING_STORE_FACTORY(bookableRoom, CURRENT_USER_ID);
             var fluxActions = BOOKING_ACTIONS_FACTORY(fluxStore, apiUtils);
 
