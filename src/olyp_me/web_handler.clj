@@ -9,7 +9,7 @@
             ring.middleware.session.cookie
             ring.middleware.params
             [olyp-me.web-handlers.login-handler :as login-handler]
-            [olyp-me.web-handlers.booking-handler :as reservation-handler]
+            [olyp-me.web-handlers.reservation-handler :as reservation-handler]
             [olyp-me.web-handlers.invoices-handler :as invoices-handler]
             [olyp-me.web-handlers.profile-handler :as profile-handler]
             [olyp-app-utils.olyp-central-api-client :as central-api-client])

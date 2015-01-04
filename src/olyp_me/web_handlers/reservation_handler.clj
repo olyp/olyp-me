@@ -1,4 +1,4 @@
-(ns olyp-me.web-handlers.booking-handler
+(ns olyp-me.web-handlers.reservation-handler
   (:require [olyp-me.web-handlers.layout :refer [layout]]
             [optimus.link :as link]
             [olyp-app-utils.olyp-central-api-client :as central-api-client]))
