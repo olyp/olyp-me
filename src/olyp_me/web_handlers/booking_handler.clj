@@ -23,9 +23,9 @@
         :headers {"Content-Type" "application/json"}
         :body (cheshire.core/generate-string (:body res))}))
 
-(defn get-bookable-room [{{:keys [api-ctx]} :olyp-env}]
+(defn get-reservable-room [{{:keys [api-ctx]} :olyp-env}]
   (central-api-client/handle-res
-   (central-api-client/request api-ctx :get "/bookable_rooms") res
+   (central-api-client/request api-ctx :get "/reservable_rooms") res
    200 (do
          (let [body (:body res)]
            (if (= (count body) 1)
@@ -34,9 +34,9 @@
               :body (cheshire.core/generate-string (first body))}
              {:status 500})))))
 
-(defn bookings-for-date [{{:keys [api-ctx]} :olyp-env :keys [route-params]}]
+(defn reservations-for-date [{{:keys [api-ctx]} :olyp-env :keys [route-params]}]
   (central-api-client/handle-res
-   (central-api-client/request api-ctx :get (str "/bookable_rooms/" (:bookable-room-id route-params) "/bookings/" (:date route-params))) res
+   (central-api-client/request api-ctx :get (str "/reservable_rooms/" (:reservable-room-id route-params) "/reservations/" (:date route-params))) res
    200 {:status 200
         :headers {"Content-Type" "application/json"}
         :body (cheshire.core/generate-string (:body res))}))
@@ -44,7 +44,7 @@
 (defn delete-booking [{{:keys [api-ctx]} :olyp-env :keys [route-params session]}]
   (let [booking-id (:booking-id route-params)
         user-id (get-in session [:current-user "id"])]
-    (central-api-client/request api-ctx :delete (str "/users/" user-id "/bookings/" booking-id))
+    (prn (central-api-client/request api-ctx :delete (str "/users/" user-id "/bookings/" booking-id)))
     {:status 200
      :headers {"Content-Type" "application/json"}
      :body "{}"}))

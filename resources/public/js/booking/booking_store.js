@@ -13,15 +13,14 @@
         });
     }
 
-    function bookingStoreFactory(bookableRoom, currentUserId) {
+    function bookingStoreFactory(reservableRoom, currentUserId) {
         var fromDateTimeFieldGetter;
         var toDateTimeFieldGetter;
         var validationError;
         var bookingAppInst;
-        var bookableRoom = bookableRoom;
         var day = moment().tz("Europe/Oslo").startOf("week").startOf("day").isoWeekday(1);
         var days = getDaysForFirstDay(day);
-        var bookings = [];
+        var reservations = [];
 
         return {
             getCurrentUserId: function () {
@@ -31,7 +30,7 @@
             changeWeek: function (step) {
                 day = day.clone().add(step * 7, "days").startOf("day");
                 days = getDaysForFirstDay(day);
-                bookings = [];
+                reservations = [];
                 bookingAppInst.forceUpdate();
             },
 
@@ -43,26 +42,26 @@
                 return days;
             },
 
-            setBookingsForDay: function (bookingsDay, newBookings) {
-                if (bookingsDay.isSame(day)) {
-                    bookings = newBookings.map(function (booking) {
+            setReservationsForDay: function (reservationsDay, newReservations) {
+                if (reservationsDay.isSame(day)) {
+                    reservations = newReservations.map(function (reservation) {
                         return {
-                            id: booking.id,
-                            from: moment(booking.from).tz("Europe/Oslo"),
-                            to: moment(booking.to).tz("Europe/Oslo"),
-                            user: booking.user,
-                            bookableRoom: booking["bookable-room"]
+                            id: reservation.id,
+                            from: moment(reservation.from).tz("Europe/Oslo"),
+                            to: moment(reservation.to).tz("Europe/Oslo"),
+                            booking: reservation.booking,
+                            reservableRoom: reservation["reservable_room"]
                         }
                     });;
-                    bookings.sort(function (a, b) {
+                    reservations.sort(function (a, b) {
                         return a.from.valueOf() - b.from.valueOf();
                     });
                     bookingAppInst.forceUpdate();
                 }
             },
 
-            getBookings: function () {
-                return bookings;
+            getReservations: function () {
+                return reservations;
             },
 
             setBookingAppInst: function (inst) {
@@ -95,8 +94,8 @@
                 return validationError;
             },
 
-            getBookableRoom: function () {
-                return bookableRoom;
+            getReservableRoom: function () {
+                return reservableRoom;
             }
         };
     }

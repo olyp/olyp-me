@@ -13,8 +13,8 @@
             return http("POST", "/api/bookings", payload);
         },
 
-        getBookings: function (bookableRoomId, day) {
-            return http("GET", "/api/bookable_rooms/" + bookableRoomId + "/bookings/" + day.format("DD.MM.YYYY"));
+        getReservations: function (reservableRoomId, day) {
+            return http("GET", "/api/reservable_rooms/" + reservableRoomId + "/reservations/" + day.format("DD.MM.YYYY"));
         },
 
         deleteBooking: function (bookingId) {
@@ -22,9 +22,9 @@
         }
     };
 
-    http("GET", "/api/bookable_room").then(
-        function (bookableRoom) {
-            var fluxStore = BOOKING_STORE_FACTORY(bookableRoom, CURRENT_USER_ID);
+    http("GET", "/api/reservable_room").then(
+        function (reservableRoom) {
+            var fluxStore = BOOKING_STORE_FACTORY(reservableRoom, CURRENT_USER_ID);
             var fluxActions = BOOKING_ACTIONS_FACTORY(fluxStore, apiUtils);
 
             var bookingAppInst = React.render(

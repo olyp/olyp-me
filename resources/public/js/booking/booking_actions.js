@@ -8,18 +8,18 @@
     }
 
     function bookingActionsFactory(fluxStore, apiUtils) {
-        function fetchBookings() {
+        function fetchReservations() {
             var day = fluxStore.getDay();
-            apiUtils.getBookings(fluxStore.getBookableRoom().id, day).then(
+            apiUtils.getReservations(fluxStore.getReservableRoom().id, day).then(
                 function (res) {
-                    fluxStore.setBookingsForDay(day, res);
+                    fluxStore.setReservationsForDay(day, res);
                 },
                 function (e) {
                     alert("An unknown error occurred: " + JSON.stringify(e));
                 });
         }
 
-        fetchBookings();
+        fetchReservations();
 
         return {
             setBookingFormDateTimeFields: function (which, getter) {
@@ -44,13 +44,13 @@
                 var payload = {
                     from: fromDate.toISOString(),
                     to: toDate.toISOString(),
-                    bookable_room_id: fluxStore.getBookableRoom().id
+                    reservable_room_id: fluxStore.getReservableRoom().id
                 }
 
                 apiUtils.createBooking(payload).then(
                     function () {
                         fluxStore.clearValidationError();
-                        fetchBookings();
+                        fetchReservations();
                         // TODO: Reset form
                     },
                     function (res) {
@@ -61,19 +61,19 @@
 
             moveToPreviousWeek: function () {
                 fluxStore.changeWeek(-1);
-                fetchBookings();
+                fetchReservations();
             },
 
             moveToNextWeek: function () {
                 fluxStore.changeWeek(1);
-                fetchBookings();
+                fetchReservations();
             },
 
-            deleteBooking: function (booking) {
+            deleteBooking: function (reservation) {
                 if (confirm("Are you sure you want to delete this booking?")) {
-                    apiUtils.deleteBooking(booking.id).then(
+                    apiUtils.deleteBooking(reservation.booking.id).then(
                         function () {
-                            fetchBookings();
+                            fetchReservations();
                         },
                         function (e) {
                             alert("An unknown error occurred: " + JSON.stringify(e));

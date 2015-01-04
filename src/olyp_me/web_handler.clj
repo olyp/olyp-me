@@ -9,7 +9,7 @@
             ring.middleware.session.cookie
             ring.middleware.params
             [olyp-me.web-handlers.login-handler :as login-handler]
-            [olyp-me.web-handlers.booking-handler :as booking-handler]
+            [olyp-me.web-handlers.booking-handler :as reservation-handler]
             [olyp-me.web-handlers.invoices-handler :as invoices-handler]
             [olyp-me.web-handlers.profile-handler :as profile-handler]
             [olyp-app-utils.olyp-central-api-client :as central-api-client])
@@ -89,16 +89,16 @@
   (-> (bidi.ring/make-handler
        [""
         {:get {"/" (fn [req] {:status 302 :headers {"Location" "/booking"}})
-               "/booking" #'booking-handler/booking-page
+               "/booking" #'reservation-handler/booking-page
                "/invoices" #'invoices-handler/invoices-page
                "/profile" #'profile-handler/profile-page
                "/logout" #'profile-handler/log-out}
-         "/api" {"/bookings" {:post {"" #'booking-handler/create-booking}}
-                 "/bookings/" {[[ #"[^\/]+" :booking-id] ""] {:delete #'booking-handler/delete-booking}}
-                 "/bookable_room" {:get {"" #'booking-handler/get-bookable-room}}
-                 "/bookable_rooms/" {[[#"[^\/]+" :bookable-room-id] ""]
-                                     {"/bookings/" {[[#"[^\/]+" :date] ""]
-                                                    {:get {""  #'booking-handler/bookings-for-date}}}}}}}])
+         "/api" {"/bookings" {:post {"" #'reservation-handler/create-booking}}
+                 "/bookings/" {[[ #"[^\/]+" :booking-id] ""] {:delete #'reservation-handler/delete-booking}}
+                 "/reservable_room" {:get {"" #'reservation-handler/get-reservable-room}}
+                 "/reservable_rooms/" {[[#"[^\/]+" :reservable-room-id] ""]
+                                       {"/reservations/" {[[#"[^\/]+" :date] ""]
+                                                          {:get {""  #'reservation-handler/reservations-for-date}}}}}}}])
       wrap-login-required))
 
 (defn app-handler [req]

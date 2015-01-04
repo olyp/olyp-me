@@ -47,11 +47,11 @@ a {
     border-top: 1px solid #eee;
 }
 
-.calendar-grid-day-bookings {
+.calendar-grid-day-reservations {
     position: relative;
 }
 
-.calendar-grid-booking {
+.calendar-grid-reservation {
     position: absolute;
     left: -1px;
     right: -1px;
@@ -60,22 +60,22 @@ a {
     background: rgb(241, 85, 35);
 }
 
-.calendar-grid-booking-overlaps-previous {
+.calendar-grid-reservation-overlaps-previous {
     border-top: none;
 }
 
-.calendar-grid-booking-overlaps-next {
+.calendar-grid-reservation-overlaps-next {
     border-bottom: none;
 }
 
-.calendar-grid-booking-delete-button {
+.calendar-grid-reservation-delete-button {
     position: absolute;
     color: rgb(160, 30, 8);
     bottom: 0px;
     right: 0px;
 }
 
-.calendar-grid-booking-delete-button:hover {
+.calendar-grid-reservation-delete-button:hover {
     text-decoration: none;
     color: rgb(160, 30, 8);
 }

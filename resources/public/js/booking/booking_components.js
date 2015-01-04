@@ -107,11 +107,11 @@
         mixins: [FluxChildComponentMixin],
 
         onClick: function () {
-            this.props.fluxActions.deleteBooking(this.props.booking);
+            this.props.fluxActions.deleteBooking(this.props.reservation);
         },
 
         render: function () {
-            return a({onClick: this.onClick, className: "calendar-grid-booking-delete-button"}, span({className: "glyphicon glyphicon-trash"}))
+            return a({onClick: this.onClick, className: "calendar-grid-reservation-delete-button"}, span({className: "glyphicon glyphicon-trash"}))
         }
     });
     var CalendarGridBookingDeleteButton = React.createFactory(CalendarGridBookingDeleteButtonClass);
@@ -124,7 +124,7 @@
         }
     }
 
-    function bookingIntersects(booking, dayStart, dayEnd) {
+    function reservationIntersects(booking, dayStart, dayEnd) {
         return (booking.from.valueOf() <= dayEnd.valueOf()) && (dayStart.valueOf() <= booking.to.valueOf());
     }
 
@@ -151,9 +151,9 @@
             this.props.fluxActions.moveToNextWeek();
         },
 
-        getDeleteButton: function (booking) {
-            if (this.props.currentUserId === booking.user.id) {
-                return CalendarGridBookingDeleteButton({fluxActions: this.props.fluxActions, booking: booking})
+        getDeleteButton: function (reservation) {
+            if (this.props.currentUserId === reservation.booking.user.id) {
+                return CalendarGridBookingDeleteButton({fluxActions: this.props.fluxActions, reservation: reservation})
             }
         },
 
@@ -163,7 +163,7 @@
                 hours.push(i);
             }
 
-            var bookings = this.props.bookings.slice(0);
+            var reservations = this.props.reservations.slice(0);
 
             return div(
                 {className: "calendar-grid"},
@@ -184,19 +184,19 @@
                         var dayStart = day.inst;
                         var dayEnd = day.inst.clone().endOf("day");
 
-                        var bookingsForDay = [];
-                        if (bookings.length > 0 && bookingIntersects(bookings[0], dayStart, dayEnd)) {
+                        var reservationsForDay = [];
+                        if (reservations.length > 0 && reservationIntersects(reservations[0], dayStart, dayEnd)) {
 
-                            var lastIntersectingBooking;
-                            for (var i = 1; i < bookings.length; i++) {
-                                if (!bookingIntersects(bookings[i], dayStart, dayEnd)) {
-                                    lastIntersectingBooking = i;
+                            var lastIntersectingReservation;
+                            for (var i = 1; i < reservations.length; i++) {
+                                if (!reservationIntersects(reservations[i], dayStart, dayEnd)) {
+                                    lastIntersectingReservation = i;
                                     break;
                                 }
                             }
 
-                            bookingsForDay = bookings.slice(0, lastIntersectingBooking);
-                            bookings = bookings.slice(lastIntersectingBooking);
+                            reservationsForDay = reservations.slice(0, lastIntersectingReservation);
+                            reservations = reservations.slice(lastIntersectingReservation);
                         }
 
                         return div(
@@ -205,38 +205,38 @@
                                 {className: "calendar-grid-day-header"},
                                 day.label, " ", day.inst.format("DD.MM")),
                             div(
-                                {className: "calendar-grid-day-bookings"},
+                                {className: "calendar-grid-day-reservations"},
                                 hours.map(function (hour) {
                                     return div(
                                         {key: "hour-" + hour, className: "calendar-grid-hour-cell"});
                                 }),
-                                bookingsForDay.map(function (booking) {
-                                    var dayStartHourOffset = (booking.from.valueOf() - dayStart.valueOf()) / 1000 / 60 / 60;
-                                    var bookingLengthOffset = (booking.to.valueOf() - booking.from.valueOf()) / 1000 / 60 / 60;
-                                    var classNames = ["calendar-grid-booking"];
+                                reservationsForDay.map(function (reservation) {
+                                    var dayStartHourOffset = (reservation.from.valueOf() - dayStart.valueOf()) / 1000 / 60 / 60;
+                                    var reservationLengthOffset = (reservation.to.valueOf() - reservation.from.valueOf()) / 1000 / 60 / 60;
+                                    var classNames = ["calendar-grid-reservation"];
 
                                     var topOffset = getOffset(dayStartHourOffset);
-                                    var bottomOffset = topOffset + getOffset(bookingLengthOffset);
+                                    var bottomOffset = topOffset + getOffset(reservationLengthOffset);
 
                                     if (topOffset < 0) {
-                                        classNames.push("calendar-grid-booking-overlaps-previous");
+                                        classNames.push("calendar-grid-reservation-overlaps-previous");
                                     }
 
                                     if (bottomOffset > (HOUR_HEIGHT * 24)) {
-                                        classNames.push("calendar-grid-booking-overlaps-next");
+                                        classNames.push("calendar-grid-reservation-overlaps-next");
                                     }
 
                                     return div(
                                         {
-                                            key: "booking-" + topOffset + "-" + bottomOffset,
+                                            key: "reservation-" + topOffset + "-" + bottomOffset,
                                             className: classNames.join(" "),
                                             style: {
                                                 top: Math.max(topOffset, 0) + "px",
                                                 bottom: ((HOUR_HEIGHT * 24) - bottomOffset) + "px"
                                             }
                                         },
-                                        div(null, booking.user.name),
-                                        div(null, this.getDeleteButton(booking))
+                                        div(null, reservation.booking.user.name),
+                                        div(null, this.getDeleteButton(reservation))
                                     );
                                 }.bind(this))
                             )
@@ -252,9 +252,9 @@
         render: function () {
             return div(
                 {className: "row"},
-                React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", this.props.fluxStore.getBookableRoom().name + "\""),
+                React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", this.props.fluxStore.getReservableRoom().name + "\""),
                 div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions, validationError: this.props.fluxStore.getValidationError()})),
-                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({fluxActions: this.props.fluxActions, days: this.props.fluxStore.getDays(), bookings: this.props.fluxStore.getBookings(), currentUserId: this.props.fluxStore.getCurrentUserId()})));
+                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({fluxActions: this.props.fluxActions, days: this.props.fluxStore.getDays(), reservations: this.props.fluxStore.getReservations(), currentUserId: this.props.fluxStore.getCurrentUserId()})));
         }
     });
     var BookingApp = React.createFactory(BookingAppClass);
