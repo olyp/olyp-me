@@ -19,8 +19,8 @@
         var validationError;
         var bookingAppInst;
         var bookableRoom = bookableRoom;
-        var day = moment().day("Monday");
-        var days = getDaysForFirstDay(moment().tz("Europe/Oslo").day("Monday").startOf("day"));
+        var day = moment().tz("Europe/Oslo").startOf("week").startOf("day").isoWeekday(1);
+        var days = getDaysForFirstDay(day);
         var bookings = [];
 
         return {
