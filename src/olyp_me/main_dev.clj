@@ -1,4 +1,4 @@
-(ns olyp-me.main
+(ns olyp-me.main-dev
   (:gen-class)
   (:require olyp-me.app
             [com.stuartsierra.component :as component]))
