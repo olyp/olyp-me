@@ -7,4 +7,5 @@
    :body
    (layout
     req
-    [:p "Invoices!"])})
+    [:h2 "Invoices"]
+    [:p "Invoice management is not yet implemented."])})
