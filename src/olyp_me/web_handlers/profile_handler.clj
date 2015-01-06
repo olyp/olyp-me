@@ -30,6 +30,7 @@
        (central-api-client/request api-ctx :post "/authenticate" {:email (current-user "email") :password (body "oldPassword")}) auth-res
        201 (central-api-client/handle-res
             (central-api-client/request api-ctx :put (str "/users/" (current-user "id") "/password") {:password (body "newPassword")}) change-res
-            201 {:status 200})
+            201 {:status 200}
+            422 {:status 422 :headers {"Content-Type" "application/json"} :body (cheshire.core/generate-string (:body change-res))})
        422 {:status 422 :headers {"Content-Type" "application/json"} :body (cheshire.core/generate-string (:body auth-res))})
       {:status 422 :headers {"Content-Type" "application/json"} :body (cheshire.core/generate-string {:msg "Passwords doesn't match"})})))
