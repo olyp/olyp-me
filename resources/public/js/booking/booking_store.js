@@ -18,7 +18,7 @@
         var toDateTimeFieldGetter;
         var validationError;
         var bookingAppInst;
-        var day = moment().tz("Europe/Oslo").startOf("week").startOf("day").isoWeekday(1);
+        var day = moment().tz("Europe/Oslo").isoWeekday(1).startOf("day");
         var days = getDaysForFirstDay(day);
         var reservations = [];
 
