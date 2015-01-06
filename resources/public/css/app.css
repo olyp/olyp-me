@@ -79,3 +79,7 @@ a {
     text-decoration: none;
     color: rgb(160, 30, 8);
 }
+
+.change-password-form {
+    max-width: 400px;
+}

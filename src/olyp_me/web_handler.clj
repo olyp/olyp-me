@@ -48,7 +48,11 @@
    (assets/load-bundle "public" "booking.js" ["/js/booking/booking_components.js"
                                               "/js/booking/booking_store.js"
                                               "/js/booking/booking_actions.js"
-                                              "/js/booking.js"])))
+                                              "/js/booking.js"])
+   (assets/load-bundle "public" "profile.js" ["/js/profile/profile_components.js"
+                                              "/js/profile/profile_store.js"
+                                              "/js/profile/profile_actions.js"
+                                              "/js/profile/profile.js"])))
 
 (defn get-assets [env]
   (if (= :dev env)
@@ -66,7 +70,7 @@
     (if-let [session-user (get-in req [:session :current-user])]
       (let [user-res (central-api-client/request api-ctx :get (str "/users/" (session-user "id")))]
         (if (= 200 (:status user-res))
-          (handler req)
+          (handler (assoc req :current-user (:body user-res)))
           {:status 302 :headers {"Location" "/login"} :session {:current-user nil}}))
       {:status 302 :headers {"Location" "/login"}})))
 
@@ -98,7 +102,9 @@
                  "/reservable_room" {:get {"" #'reservation-handler/get-reservable-room}}
                  "/reservable_rooms/" {[[#"[^\/]+" :reservable-room-id] ""]
                                        {"/reservations/" {[[#"[^\/]+" :date] ""]
-                                                          {:get {""  #'reservation-handler/reservations-for-date}}}}}}}])
+                                                          {:get {""  #'reservation-handler/reservations-for-date}}}}}
+                 "/profile" {:get #'profile-handler/current-user}
+                 "/password" {:put #'profile-handler/change-password}}}])
       wrap-login-required))
 
 (defn app-handler [req]

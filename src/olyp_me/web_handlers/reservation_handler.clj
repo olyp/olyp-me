@@ -9,9 +9,10 @@
    :body
    (layout
     req
-    [:div#booking-app]
-    (map (fn [url] [:script {:src url}])
-         (link/bundle-paths req ["lib.js" "booking.js"])))})
+    [:div {:class "container-fluid"}
+     [:div#booking-app]
+     (map (fn [url] [:script {:src url}])
+          (link/bundle-paths req ["lib.js" "booking.js"]))])})
 
 (defn create-booking [{{:keys [api-ctx]} :olyp-env :keys [body] {:keys [current-user]} :session}]
   (central-api-client/handle-res
