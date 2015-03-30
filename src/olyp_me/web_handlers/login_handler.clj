@@ -10,6 +10,7 @@
    (html5
     [:head
      [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
+     [:title "Login - Oslo Lydproduksjon"]
      (map (fn [url] [:link {:rel "stylesheet" :href url}])
           (link/bundle-paths req ["app.css"]))]
     [:body
