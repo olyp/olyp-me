@@ -80,6 +80,10 @@
                         }
                     )
                 }
+            },
+
+            editBooking: function (reservation) {
+                alert("I don't work yet :(");
             }
         };
 

@@ -68,14 +68,17 @@ a {
     border-bottom: none;
 }
 
-.calendar-grid-reservation-delete-button {
+.calendar-grid-reservation-buttons {
     position: absolute;
-    color: rgb(160, 30, 8);
     bottom: 0px;
     right: 0px;
 }
 
-.calendar-grid-reservation-delete-button:hover {
+.calendar-grid-reservation-buttons a {
+    color: rgb(160, 30, 8);
+}
+
+.calendar-grid-reservation-buttons a:hover {
     text-decoration: none;
     color: rgb(160, 30, 8);
 }

@@ -98,23 +98,33 @@
                 div({className: "form-group"},
                     label(null, "To"),
                     BookingFormDateTimeFields({fluxActions: this.props.fluxActions, name: "to", initialDate: moment().hour(15).minute(0)})),
+                div({className: "form-group"},
+                    label(null, "Comment"),
+                    input({type: "text", className: "form-control"})),
                 input({type: "submit", value: "Book now!", className: "btn btn-default"}));
         }
     });
     var BookingForm = React.createFactory(BookingFormClass);
 
-    var CalendarGridBookingDeleteButtonClass = React.createClass({
+    var CalendarGridBookingButtonsClass = React.createClass({
         mixins: [FluxChildComponentMixin],
 
-        onClick: function () {
+        onEditClick: function () {
+            this.props.fluxActions.editBooking(this.props.reservation);
+        },
+
+        onDeleteClick: function () {
             this.props.fluxActions.deleteBooking(this.props.reservation);
         },
 
         render: function () {
-            return a({onClick: this.onClick, className: "calendar-grid-reservation-delete-button"}, span({className: "glyphicon glyphicon-trash"}))
+            return span(
+                {className: "calendar-grid-reservation-buttons"},
+                a({onClick: this.onEditClick}, span({className: "glyphicon glyphicon-pencil"})),
+                a({onClick: this.onDeleteClick}, span({className: "glyphicon glyphicon-trash"})));
         }
     });
-    var CalendarGridBookingDeleteButton = React.createFactory(CalendarGridBookingDeleteButtonClass);
+    var CalendarGridBookingButtons = React.createFactory(CalendarGridBookingButtonsClass);
 
     function formatHour(hour) {
         if (hour < 10) {
@@ -153,7 +163,7 @@
 
         getDeleteButton: function (reservation) {
             if (this.props.currentUserId === reservation.booking.user.id) {
-                return CalendarGridBookingDeleteButton({fluxActions: this.props.fluxActions, reservation: reservation})
+                return CalendarGridBookingButtons({fluxActions: this.props.fluxActions, reservation: reservation})
             }
         },
 
