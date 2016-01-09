@@ -1,27 +1,11 @@
 (ns user
-  (:require [com.stuartsierra.component :as component]
-            [clojure.tools.namespace.repl :refer (refresh)]
-            [olyp-me.app :as app]))
+  (:require [reloaded.repl :refer [system init start stop go reset]]
+            [olyp-me.app :as app]
+            clojure.edn))
 
-(def system nil)
-
-(defn init []
-  (alter-var-root #'system
-    (constantly (app/create-system {:olyp-central-api {:url "http://localhost:3000"}
-                                    :web {:port 3001}
-                                    :env :dev}))))
-
-(defn start []
-  (alter-var-root #'system component/start))
-
-(defn stop []
-  (alter-var-root #'system
-    (fn [s] (when s (component/stop s)))))
-
-(defn go []
-  (init)
-  (start))
-
-(defn reset []
-  (stop)
-  (refresh :after 'user/go))
+(reloaded.repl/set-init! #(app/create-system (merge
+                                               {:olyp-central-api {:url "http://localhost:3000"}
+                                                :web {:port 3001}
+                                                :env :dev
+                                                :cookie-secret "12345678abcdef12"}
+                                               (-> "config.edn" slurp clojure.edn/read-string))))

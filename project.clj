@@ -13,8 +13,7 @@
                  [org.clojure/tools.logging "0.3.1"]
                  [ch.qos.logback/logback-classic "1.1.2"]]
   :profiles {:dev {:source-paths ["dev"]
-                   :main olyp-me.main-dev}
+                   :dependencies [[reloaded.repl "0.1.0"]]}
              :uberjar {:source-paths ["prod"]
                        :main olyp-me.main-prod
-                       :aot [olyp-me.main-prod]}}
-  :plugins [[cider/cider-nrepl "0.7.0-SNAPSHOT"]])
+                       :aot [olyp-me.main-prod]}})
