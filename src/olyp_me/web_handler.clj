@@ -47,7 +47,8 @@
                                            "/bootstrap/css/bootstrap-theme.css"
                                            "/bootstrap-datepicker/css/datepicker.css"
                                            "/css/app.css"])
-   (assets/load-bundle "public" "booking.js" ["/js/booking/booking_components.js"
+   (assets/load-bundle "public" "booking.js" ["/js/util.js"
+                                              "/js/booking/booking_components.js"
                                               "/js/booking.js"])
    (assets/load-bundle "public" "profile.js" ["/js/profile/profile_components.js"
                                               "/js/profile/profile_store.js"
