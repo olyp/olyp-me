@@ -25,6 +25,10 @@ a {
     overflow: hidden;
 }
 
+.calendar-grid-content-no-data {
+    background-color: #f7f7f7;
+}
+
 .calendar-grid-column {
     float: left;
     width: 14.2%;
@@ -81,6 +85,20 @@ a {
 .calendar-grid-reservation-buttons a:hover {
     text-decoration: none;
     color: rgb(160, 30, 8);
+}
+
+.calendar-grid-reservation-user-name,
+.calendar-grid-reservation-comment {
+    font-size: 11px;
+}
+
+.calendar-grid-reservation-user-name {
+    font-weight: bold;
+}
+
+.calendar-grid-reservation-comment {
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .change-password-form {

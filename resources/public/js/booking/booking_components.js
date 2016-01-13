@@ -1,137 +1,145 @@
-(function (GLOBAL) {
-    var div = React.DOM.div;
-    var form = React.DOM.form;
-    var label = React.DOM.label;
-    var input = React.DOM.input;
-    var a = React.DOM.a;
-    var span = React.DOM.span;
+var BOOKING_COMPONENTS = (function () {
+    var hours = [];
+    for (var i = 0; i < 24; i++) {
+        hours.push(i);
+    }
 
-    var FluxRootComponentMixin = {
-        propTypes: {
-            fluxActions: React.PropTypes.object.required,
-            fluxStore: React.PropTypes.object.required
+    function padNum(num) {
+        if (num < 10) {
+            return "0" + num;
+        } else {
+            return num.toString();
         }
-    };
+    }
 
-    var FluxChildComponentMixin = {
-        propTypes: {
-            // fluxActions: React.PropTypes.object.required
-        }
-    };
-
-    var BookingFormDateTimeFieldsClass = React.createClass({
-        mixins: [FluxChildComponentMixin],
-
+    var BookingFormDateTimeFields = React.createFactory(React.createClass({
         componentDidMount: function () {
-            var DATE_FORMAT = "DD.MM.YYYY";
-            var TIME_FORMAT = "HH:mm";
+            var calendarButton = this.refs["calendarButton"].getDOMNode();
 
-            var container = this.getDOMNode();
+            jQuery(calendarButton)
+                .datepicker()
+                .on("changeDate", function (e) {
+                    this.datePickerDate =  moment(e.date).format("DD.MM.YYYY");
+                    this.updateDate();
+                    jQuery(calendarButton).datepicker("hide");
+                }.bind(this));
+            this.datePickerDate = moment(this.props.value).format("DD.MM.YYYY");
+        },
 
-            var rowWrapper = document.createElement("div");
-            rowWrapper.className = "row";
+        updateDate: function () {
+            var hourSelect = this.refs["hourSelect"].getDOMNode();
+            var newDate = moment(this.datePickerDate + " " + hourSelect.value, "DD.MM.YYYY HH:mm");
+            this.props.onChange(newDate.valueOf());
+        },
 
-            var datePickerCell = document.createElement("div");
-            datePickerCell.className = "col-xs-7";
-            rowWrapper.appendChild(datePickerCell);
-
-            var timePickerCell = document.createElement("div");
-            timePickerCell.className = "col-xs-5";
-            rowWrapper.appendChild(timePickerCell);
-
-            var dateInput = document.createElement("input");
-            dateInput.type = "text";
-            dateInput.className = "form-control";
-            dateInput.value = this.props.initialDate.format("DD.MM.YYYY");
-            jQuery(dateInput).datepicker({format: "dd.mm.yyyy", weekStart: 1});
-            datePickerCell.appendChild(dateInput);
-
-            var timeInput = document.createElement("input");
-            timeInput.type = "text";
-            timeInput.className = "form-control";
-            timeInput.value = this.props.initialDate.format("HH:mm");
-            timePickerCell.appendChild(timeInput);
-
-            this.props.fluxActions.setBookingFormDateTimeFields(this.props.name, function () {
-                var result = moment(dateInput.value + " " + timeInput.value, DATE_FORMAT + " " + TIME_FORMAT, true);
-                if (result.isValid()) {
-                    return result;
-                } else {
-                    return null;
-                }
-            });
-
-            container.appendChild(rowWrapper);
+        componentDidUpdate: function () {
+            // If the date is set from the outside, we need to update the date picker internal state here.
+            // Not implemented yet.
         },
 
         render: function () {
-            return div();
+            var date = moment(this.props.value);
+
+            return React.DOM.div({className: "form-inline"},
+                React.DOM.div({className: "input-group"},
+                    React.DOM.span({
+                            className: "input-group-addon",
+                            ref: "calendarButton",
+                            "data-date-format": "DD.MM.YYYY",
+                            "data-date": date.format("DD.MM.YYYY")
+                        },
+                        React.DOM.span({className: "glyphicon glyphicon-calendar"})),
+                    React.DOM.input({type: "text", className: "form-control", value: date.format("DD.MM.YYYY"), readOnly: true, size: 10})),
+                " ",
+                React.DOM.div({className: "form-group"},
+                    React.DOM.select({className: "form-control", value: date.format("HH:mm"), ref: "hourSelect", onChange: this.updateDate},
+                        hours.map(function (hour) {
+                            return [
+                                React.DOM.option({key: "hour-" + hour + "-0"}, padNum(hour) + ":00"),
+                                React.DOM.option({key: "hour-" + hour + "-30"}, padNum(hour) + ":30")
+                            ];
+                        }))))
         }
-    });
-    var BookingFormDateTimeFields = React.createFactory(BookingFormDateTimeFieldsClass);
+    }));
 
-    var BookingFormClass = React.createClass({
-        mixins: [FluxChildComponentMixin],
-
-        onSubmit: function (e) {
-            e.preventDefault();
-            this.props.fluxActions.submitBookingForm();
-        },
-
-        getValidationError: function () {
-            var msg = this.props.validationError;
-            if (msg) {
-                return div(
-                    {className: "panel panel-danger"},
-                    div({className: "panel-heading"},
-                        React.DOM.h3({className: "panel-title"}, msg)));
+    function getErrorMessageComponent(err) {
+        if (err.xhr) {
+            if (err.status === 422) {
+                try {
+                    var data = JSON.parse(err.body);
+                    return React.DOM.div({style: {whiteSpace: "pre-wrap"}},
+                        JSON.stringify(data, null, 2));
+                } catch (e) {}
             }
-        },
 
-        render: function () {
-            return form(
-                {onSubmit: this.onSubmit},
-                this.getValidationError(),
-                div({className: "form-group"},
-                    label(null, "From"),
-                    BookingFormDateTimeFields({fluxActions: this.props.fluxActions, name: "from", initialDate: moment().hour(14).minute(0)})),
-                div({className: "form-group"},
-                    label(null, "To"),
-                    BookingFormDateTimeFields({fluxActions: this.props.fluxActions, name: "to", initialDate: moment().hour(15).minute(0)})),
-                div({className: "form-group"},
-                    label(null, "Comment"),
-                    input({type: "text", className: "form-control"})),
-                input({type: "submit", value: "Book now!", className: "btn btn-default"}));
+            return "Unknown error (code " + err.status + ")";
         }
-    });
-    var BookingForm = React.createFactory(BookingFormClass);
 
-    var CalendarGridBookingButtonsClass = React.createClass({
-        mixins: [FluxChildComponentMixin],
+        return err.toString();
+    }
 
-        onEditClick: function () {
-            this.props.fluxActions.editBooking(this.props.reservation);
-        },
-
-        onDeleteClick: function () {
-            this.props.fluxActions.deleteBooking(this.props.reservation);
-        },
-
+    var ValidationError = React.createFactory(React.createClass({
         render: function () {
-            return span(
+            var err = this.props.err;
+            if (!err) {
+                return null;
+            }
+
+            return React.DOM.div({className: "panel panel-danger"},
+                React.DOM.div({className: "panel-heading"},
+                    getErrorMessageComponent(err)));
+        }
+    }));
+
+    var BookingForm = React.createFactory(React.createClass({
+        render: function () {
+            var props = this.props;
+
+            return React.DOM.form({onSubmit: function (e) {
+                    e.preventDefault();
+                    props.actions.submitBookingForm();
+                }},
+                ValidationError({err: mori.get(props.form, "validationError")}),
+                React.DOM.div({className: "form-group"},
+                    React.DOM.label(null, "From"),
+                    BookingFormDateTimeFields({
+                        dispatch: props.dispatch,
+                        value: mori.get(props.form, "from"),
+                        onChange: function (value) { props.dispatch({type: "SET_BOOKING_FORM_FROM", value: value}); }
+                    })),
+                React.DOM.div({className: "form-group"},
+                    React.DOM.label(null, "To"),
+                    BookingFormDateTimeFields({
+                        dispatch: props.dispatch,
+                        value: mori.get(props.form, "to"),
+                        onChange: function (value) { props.dispatch({type: "SET_BOOKING_FORM_TO", value: value}); }
+                    })),
+                React.DOM.div({className: "form-group"},
+                    React.DOM.label(null, "Comment"),
+                    React.DOM.input({
+                        type: "text",
+                        className: "form-control",
+                        value: mori.get(props.form, "comment"),
+                        onChange: function (e) { props.dispatch({type: "SET_BOOKING_FORM_COMMENT", value: e.target.value}) }
+                    })),
+                React.DOM.input({type: "submit", value: "Book now!", className: "btn btn-default", disabled: mori.get(props.form, "isSubmitting")}));
+        }
+    }));
+
+    var CalendarGridReservationButtons = React.createFactory(React.createClass({
+        render: function () {
+            var props = this.props;
+
+            return React.DOM.span(
                 {className: "calendar-grid-reservation-buttons"},
-                a({onClick: this.onEditClick}, span({className: "glyphicon glyphicon-pencil"})),
-                a({onClick: this.onDeleteClick}, span({className: "glyphicon glyphicon-trash"})));
+                React.DOM.a({
+                    onClick: function () { props.actions.deleteBooking(props.reservation.booking.id); }
+                }, React.DOM.span({className: "glyphicon glyphicon-trash"})));
         }
-    });
-    var CalendarGridBookingButtons = React.createFactory(CalendarGridBookingButtonsClass);
+    }));
 
     function formatHour(hour) {
-        if (hour < 10) {
-            return "0" + hour + ":00";
-        } else {
-            return hour + ":00";
-        }
+        return padNum(hour) + ":00";
     }
 
     function reservationIntersects(booking, dayStart, dayEnd) {
@@ -150,54 +158,76 @@
         }
     }
 
-    var CalendarGridClass = React.createClass({
-        mixins: [FluxChildComponentMixin],
+    function currentWeekSummary(baseDayVal, firstDayVal, lastDayVal) {
+        var firstDay = moment(firstDayVal);
+        var lastDay = moment(lastDayVal);
 
-        prevWeekButtonClicked: function () {
-            this.props.fluxActions.moveToPreviousWeek();
-        },
+        var firstMonth = firstDay.format("MMM");
+        var lastMonth = lastDay.format("MMM");
 
-        nextWeekButtonClicked: function () {
-            this.props.fluxActions.moveToNextWeek();
-        },
+        return React.DOM.span(null,
+            firstMonth + " " + firstDay.format("DD")
+            + " - "
+            + (firstMonth === lastMonth ? "" : (lastMonth + " ")) + lastDay.format("DD")
+            + ", " + moment(baseDayVal).format("YYYY"));
+    }
 
-        getDeleteButton: function (reservation) {
-            if (this.props.currentUserId === reservation.booking.user.id) {
-                return CalendarGridBookingButtons({fluxActions: this.props.fluxActions, reservation: reservation})
-            }
-        },
-
+    var CalendarGrid = React.createFactory(React.createClass({
         render: function () {
-            var hours = [];
-            for (var i = 0; i < 24; i++) {
-                hours.push(i);
+            var props = this.props;
+            var calendarDays = mori.get(props.calendar, "days");
+            var reservations = (mori.toJs(props.reservations) || []).map(function (reservation) {
+                return {
+                    id: reservation.id,
+                    from: moment(reservation.from).tz("Europe/Oslo"),
+                    to: moment(reservation.to).tz("Europe/Oslo"),
+                    comment: reservation.comment,
+                    booking: reservation.booking,
+                    reservableRoom: reservation["reservable_room"]
+                }
+            });
+            reservations.sort(function (a, b) {
+                return a.from.valueOf() - b.from.valueOf();
+            });
+
+            var calendarGridClassNames = ["calendar-grid-content"];
+            if (props.reservations === null) {
+                calendarGridClassNames.push("calendar-grid-content-no-data");
             }
 
-            var reservations = this.props.reservations.slice(0);
-
-            return div(
-                {className: "calendar-grid"},
-                div({className: "calendar-grid-hours"},
-                    div({className: "calendar-grid-hours-header"},
-                        div({className: "btn-group"},
-                            a({className: "btn btn-xs btn-default", onClick: this.prevWeekButtonClicked},
-                              span({className: "glyphicon glyphicon-chevron-left"})),
-                            a({className: "btn btn-xs btn-default", onClick: this.nextWeekButtonClicked},
-                              span({className: "glyphicon glyphicon-chevron-right"})))),
+            return React.DOM.div({className: "calendar-grid"},
+                React.DOM.div({style: {marginBottom: 14}},
+                    React.DOM.a({className: "btn btn-xs btn-default", onClick: function () { props.actions.gotoToday(); }}, "Today"),
+                    " ",
+                    React.DOM.div({className: "btn-group"},
+                        React.DOM.a({
+                            className: "btn btn-xs btn-default",
+                            onClick: function () { props.actions.gotoWeek(-1); }
+                        }, React.DOM.span({className: "glyphicon glyphicon-chevron-left"})),
+                        React.DOM.a({
+                            className: "btn btn-xs btn-default",
+                            onClick: function () { props.actions.gotoWeek(1); }
+                        }, React.DOM.span({className: "glyphicon glyphicon-chevron-right"}))),
+                    " ",
+                    currentWeekSummary(mori.get(props.calendar, "baseDay"), mori.first(calendarDays), mori.last(calendarDays))),
+                React.DOM.div({className: "calendar-grid-hours"},
+                    React.DOM.div({className: "calendar-grid-hours-header"}),
                     hours.map(function (hour) {
-                        return div(
-                            {key: "hour-" + hour, className: "calendar-grid-hour-cell"},
-                            formatHour(hour));
+                        return React.DOM.div({
+                            key: "hour-" + hour, className: "calendar-grid-hour-cell"
+                        }, formatHour(hour));
                     })),
-                div({className: "calendar-grid-content"},
-                    this.props.days.map(function (day) {
-                        var dayStart = day.inst;
-                        var dayEnd = day.inst.clone().endOf("day");
+                React.DOM.div({className: calendarGridClassNames.join(" ")},
+                    mori.toJs(mori.map(function (dayValue) {
+                        var day = moment(dayValue).tz("Europe/Oslo");
+                        var dayStart = day.clone();
+                        var dayEnd = day.clone().endOf("day");
+                        var label = day.format("ddd");
 
                         var reservationsForDay = [];
                         if (reservations.length > 0 && reservationIntersects(reservations[0], dayStart, dayEnd)) {
 
-                            var lastIntersectingReservation;
+                            var lastIntersectingReservation = null;
                             for (var i = 1; i < reservations.length; i++) {
                                 if (!reservationIntersects(reservations[i], dayStart, dayEnd)) {
                                     lastIntersectingReservation = i;
@@ -205,20 +235,20 @@
                                 }
                             }
 
-                            reservationsForDay = reservations.slice(0, lastIntersectingReservation);
-                            reservations = reservations.slice(lastIntersectingReservation);
+                            if (lastIntersectingReservation === null) {
+                                reservationsForDay = reservations;
+                                reservations = reservations.slice(reservations.length - 1);
+                            } else {
+                                reservationsForDay = reservations.slice(0, lastIntersectingReservation);
+                                reservations = reservations.slice(lastIntersectingReservation);
+                            }
                         }
 
-                        return div(
-                            {key: "day-" + day.label, className: "calendar-grid-column"},
-                            div(
-                                {className: "calendar-grid-day-header"},
-                                day.label, " ", day.inst.format("DD.MM")),
-                            div(
-                                {className: "calendar-grid-day-reservations"},
+                        return React.DOM.div({key: "day-" + label, className: "calendar-grid-column"},
+                            React.DOM.div({className: "calendar-grid-day-header"}, label + " " + day.format("DD.MM")),
+                            React.DOM.div({className: "calendar-grid-day-reservations"},
                                 hours.map(function (hour) {
-                                    return div(
-                                        {key: "hour-" + hour, className: "calendar-grid-hour-cell"});
+                                    return React.DOM.div({key: "hour-" + hour, className: "calendar-grid-hour-cell"});
                                 }),
                                 reservationsForDay.map(function (reservation) {
                                     var dayStartHourOffset = (reservation.from.valueOf() - dayStart.valueOf()) / 1000 / 60 / 60;
@@ -236,7 +266,7 @@
                                         classNames.push("calendar-grid-reservation-overlaps-next");
                                     }
 
-                                    return div(
+                                    return React.DOM.div(
                                         {
                                             key: "reservation-" + topOffset + "-" + bottomOffset,
                                             className: classNames.join(" "),
@@ -245,31 +275,44 @@
                                                 bottom: ((HOUR_HEIGHT * 24) - bottomOffset) + "px"
                                             }
                                         },
-                                        div(null, reservation.booking.user.name),
-                                        div(null, this.getDeleteButton(reservation))
+                                        React.DOM.div({className: "calendar-grid-reservation-user-name"}, reservation.booking.user.name),
+                                        React.DOM.div({className: "calendar-grid-reservation-comment", title: reservation.comment}, reservation.comment),
+                                        props.currentUserId === reservation.booking.user.id && CalendarGridReservationButtons({
+                                            dispatch: props.dispatch,
+                                            actions: props.actions,
+                                            reservation: reservation
+                                        })
                                     );
-                                }.bind(this))
-                            )
-                        );
-                    }.bind(this))));
+                                })));
+                    }, calendarDays))));
         }
-    });
-    var CalendarGrid = React.createFactory(CalendarGridClass);
+    }));
 
-    var BookingAppClass = React.createClass({
-        mixin: [FluxRootComponentMixin],
-
+    var BookingApp = React.createFactory(React.createClass({
         render: function () {
-            return div(
-                {className: "row"},
-                React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", this.props.fluxStore.getReservableRoom().name + "\""),
-                div({className: "col-md-3 col-md-push-9"}, BookingForm({fluxActions: this.props.fluxActions, validationError: this.props.fluxStore.getValidationError()})),
-                div({className: "col-md-9 col-md-pull-3"}, CalendarGrid({fluxActions: this.props.fluxActions, days: this.props.fluxStore.getDays(), reservations: this.props.fluxStore.getReservations(), currentUserId: this.props.fluxStore.getCurrentUserId()})));
-        }
-    });
-    var BookingApp = React.createFactory(BookingAppClass);
+            var props = this.props;
+            var reservableRoom = mori.get(props.appState, "reservableRoom");
 
-    GLOBAL.BOOKING_COMPONENTS = {
+            return React.DOM.div({className: "row"},
+                React.DOM.div({className: "calendar-grid-title"}, "Booking of \"", mori.get(reservableRoom, "name") + "\""),
+                React.DOM.div({className: "col-md-3 col-md-push-9"},
+                    BookingForm({
+                        dispatch: props.dispatch,
+                        actions: props.actions,
+                        form: mori.get(props.appState, "bookingForm")
+                    })),
+                React.DOM.div({className: "col-md-9 col-md-pull-3"},
+                    CalendarGrid({
+                        dispatch: props.dispatch,
+                        actions: props.actions,
+                        calendar: mori.get(props.appState, "calendar"),
+                        reservations: mori.get(props.appState, "reservations"),
+                        currentUserId: mori.get(props.appState, "currentUserId")
+                    })));
+        }
+    }));
+
+    return {
         BookingApp: BookingApp
-    };
-}(this));
+    }
+}());

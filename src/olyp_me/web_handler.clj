@@ -39,6 +39,8 @@
                                           "/js/lib/moment-timezone-with-data-0.2.5.js"
                                           "/js/lib/jquery-2.1.3.js"
                                           "/js/lib/when-3.7.2.js"
+                                          "/js/lib/redux-3.0.5.js"
+                                          "/js/lib/mori-0.3.2.js"
                                           "/js/olyp_app_utils/http.js"
                                           "/bootstrap-datepicker/js/bootstrap-datepicker.js"])
    (assets/load-bundle "public" "app.css" ["/bootstrap/css/bootstrap.css"
@@ -46,8 +48,6 @@
                                            "/bootstrap-datepicker/css/datepicker.css"
                                            "/css/app.css"])
    (assets/load-bundle "public" "booking.js" ["/js/booking/booking_components.js"
-                                              "/js/booking/booking_store.js"
-                                              "/js/booking/booking_actions.js"
                                               "/js/booking.js"])
    (assets/load-bundle "public" "profile.js" ["/js/profile/profile_components.js"
                                               "/js/profile/profile_store.js"
