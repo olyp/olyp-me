@@ -1,4 +1,9 @@
 !function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.when=e():"undefined"!=typeof global?global.when=e():"undefined"!=typeof self&&(self.when=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+require('../monitor/console');
+module.exports = require('./when.browserify.js');
+
+
+},{"../monitor/console":30,"./when.browserify.js":2}],2:[function(require,module,exports){
 var when = module.exports = require('../when');
 
 when.callbacks = require('../callbacks');
@@ -14,7 +19,7 @@ when.poll = require('../poll');
 when.sequence = require('../sequence');
 when.timeout = require('../timeout');
 
-},{"../callbacks":2,"../cancelable":3,"../delay":4,"../function":5,"../guard":6,"../keys":7,"../node":26,"../parallel":27,"../pipeline":28,"../poll":29,"../sequence":30,"../timeout":31,"../when":32}],2:[function(require,module,exports){
+},{"../callbacks":3,"../cancelable":4,"../delay":5,"../function":6,"../guard":7,"../keys":8,"../node":32,"../parallel":33,"../pipeline":34,"../poll":35,"../sequence":36,"../timeout":37,"../when":38}],3:[function(require,module,exports){
 /** @license MIT License (c) copyright 2013-2014 original author or authors */
 
 /**
@@ -278,7 +283,7 @@ define(function(require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./lib/apply":11,"./lib/liftAll":23,"./when":32}],3:[function(require,module,exports){
+},{"./lib/apply":12,"./lib/liftAll":24,"./when":38}],4:[function(require,module,exports){
 /** @license MIT License (c) copyright B Cavalier & J Hann */
 
 /**
@@ -334,7 +339,7 @@ define(function() {
 
 
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -363,7 +368,7 @@ define(function(require) {
 
 
 
-},{"./when":32}],5:[function(require,module,exports){
+},{"./when":38}],6:[function(require,module,exports){
 /** @license MIT License (c) copyright 2013-2014 original author or authors */
 
 /**
@@ -469,7 +474,7 @@ define(function(require) {
 
 
 
-},{"./lib/apply":11,"./lib/liftAll":23,"./when":32}],6:[function(require,module,exports){
+},{"./lib/apply":12,"./lib/liftAll":24,"./when":38}],7:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -543,7 +548,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"./when":32}],7:[function(require,module,exports){
+},{"./when":38}],8:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -625,7 +630,7 @@ define(function(require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./when":32}],8:[function(require,module,exports){
+},{"./when":38}],9:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -644,7 +649,7 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./Scheduler":9,"./env":21,"./makePromise":24}],9:[function(require,module,exports){
+},{"./Scheduler":10,"./env":22,"./makePromise":25}],10:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -664,9 +669,9 @@ define(function() {
 		this._async = async;
 		this._running = false;
 
-		this._queue = new Array(1<<16);
+		this._queue = this;
 		this._queueLen = 0;
-		this._afterQueue = new Array(1<<4);
+		this._afterQueue = {};
 		this._afterQueueLen = 0;
 
 		var self = this;
@@ -726,7 +731,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -754,7 +759,7 @@ define(function() {
 	return TimeoutError;
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -811,7 +816,7 @@ define(function() {
 
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1054,8 +1059,12 @@ define(function(require) {
 
 		function settleOne(p) {
 			var h = Promise._handler(p);
-			return h.state() === 0 ? toPromise(p).then(state.fulfilled, state.rejected)
-					: state.inspect(h);
+			if(h.state() === 0) {
+				return toPromise(p).then(state.fulfilled, state.rejected);
+			}
+
+			h._unreport();
+			return state.inspect(h);
 		}
 
 		/**
@@ -1098,7 +1107,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../apply":11,"../state":25}],13:[function(require,module,exports){
+},{"../apply":12,"../state":26}],14:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1260,7 +1269,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1289,7 +1298,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1311,7 +1320,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../state":25}],16:[function(require,module,exports){
+},{"../state":26}],17:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1378,7 +1387,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1404,7 +1413,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1484,7 +1493,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../TimeoutError":10,"../env":21}],19:[function(require,module,exports){
+},{"../TimeoutError":11,"../env":22}],20:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1496,6 +1505,7 @@ define(function(require) {
 	var format = require('../format');
 
 	return function unhandledRejection(Promise) {
+
 		var logError = noop;
 		var logInfo = noop;
 		var localConsole;
@@ -1571,7 +1581,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../env":21,"../format":22}],20:[function(require,module,exports){
+},{"../env":22,"../format":23}],21:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1611,7 +1621,7 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1686,7 +1696,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1744,7 +1754,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1774,7 +1784,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1785,6 +1795,7 @@ define(function() {
 	return function makePromise(environment) {
 
 		var tasks = environment.scheduler;
+		var emitRejection = initEmitRejection();
 
 		var objectCreate = Object.create ||
 			function(proto) {
@@ -2251,7 +2262,8 @@ define(function() {
 
 		Pending.prototype.run = function() {
 			var q = this.consumers;
-			var handler = this.join();
+			var handler = this.handler;
+			this.handler = this.handler.join();
 			this.consumers = void 0;
 
 			for (var i = 0; i < q.length; ++i) {
@@ -2413,6 +2425,8 @@ define(function() {
 		};
 
 		Rejected.prototype.fail = function(context) {
+			this.reported = true;
+			emitRejection('unhandledRejection', this);
 			Promise.onFatalRejection(this, context === void 0 ? this.context : context);
 		};
 
@@ -2422,9 +2436,10 @@ define(function() {
 		}
 
 		ReportTask.prototype.run = function() {
-			if(!this.rejection.handled) {
+			if(!this.rejection.handled && !this.rejection.reported) {
 				this.rejection.reported = true;
-				Promise.onPotentiallyUnhandledRejection(this.rejection, this.context);
+				emitRejection('unhandledRejection', this.rejection) ||
+					Promise.onPotentiallyUnhandledRejection(this.rejection, this.context);
 			}
 		};
 
@@ -2434,14 +2449,14 @@ define(function() {
 
 		UnreportTask.prototype.run = function() {
 			if(this.rejection.reported) {
-				Promise.onPotentiallyUnhandledRejectionHandled(this.rejection);
+				emitRejection('rejectionHandled', this.rejection) ||
+					Promise.onPotentiallyUnhandledRejectionHandled(this.rejection);
 			}
 		};
 
 		// Unhandled rejection hooks
 		// By default, everything is a noop
 
-		// TODO: Better names: "annotate"?
 		Promise.createContext
 			= Promise.enterContext
 			= Promise.exitContext
@@ -2654,12 +2669,51 @@ define(function() {
 
 		function noop() {}
 
+		function initEmitRejection() {
+			/*global process, self, CustomEvent*/
+			if(typeof process !== 'undefined' && process !== null
+				&& typeof process.emit === 'function') {
+				// Returning falsy here means to call the default
+				// onPotentiallyUnhandledRejection API.  This is safe even in
+				// browserify since process.emit always returns falsy in browserify:
+				// https://github.com/defunctzombie/node-process/blob/master/browser.js#L40-L46
+				return function(type, rejection) {
+					return type === 'unhandledRejection'
+						? process.emit(type, rejection.value, rejection)
+						: process.emit(type, rejection);
+				};
+			} else if(typeof self !== 'undefined' && typeof CustomEvent === 'function') {
+				return (function(noop, self, CustomEvent) {
+					var hasCustomEvent = false;
+					try {
+						var ev = new CustomEvent('unhandledRejection');
+						hasCustomEvent = ev instanceof CustomEvent;
+					} catch (e) {}
+
+					return !hasCustomEvent ? noop : function(type, rejection) {
+						var ev = new CustomEvent(type, {
+							detail: {
+								reason: rejection.value,
+								key: rejection
+							},
+							bubbles: false,
+							cancelable: true
+						});
+
+						return !self.dispatchEvent(ev);
+					};
+				}(noop, self, CustomEvent));
+			}
+
+			return noop;
+		}
+
 		return Promise;
 	};
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2696,7 +2750,433 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function(require) {
+
+	var PromiseMonitor = require('./monitor/PromiseMonitor');
+	var ConsoleReporter = require('./monitor/ConsoleReporter');
+
+	var promiseMonitor = new PromiseMonitor(new ConsoleReporter());
+
+	return function(Promise) {
+		return promiseMonitor.monitor(Promise);
+	};
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+
+},{"./monitor/ConsoleReporter":28,"./monitor/PromiseMonitor":29}],28:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function(require) {
+
+	var error = require('./error');
+	var unhandledRejectionsMsg = '[promises] Unhandled rejections: ';
+	var allHandledMsg = '[promises] All previously unhandled rejections have now been handled';
+
+	function ConsoleReporter() {
+		this._previouslyReported = false;
+	}
+
+	ConsoleReporter.prototype = initDefaultLogging();
+
+	ConsoleReporter.prototype.log = function(traces) {
+		if(traces.length === 0) {
+			if(this._previouslyReported) {
+				this._previouslyReported = false;
+				this.msg(allHandledMsg);
+			}
+			return;
+		}
+
+		this._previouslyReported = true;
+		this.groupStart(unhandledRejectionsMsg + traces.length);
+		try {
+			this._log(traces);
+		} finally {
+			this.groupEnd();
+		}
+	};
+
+	ConsoleReporter.prototype._log = function(traces) {
+		for(var i=0; i<traces.length; ++i) {
+			this.warn(error.format(traces[i]));
+		}
+	};
+
+	function initDefaultLogging() {
+		/*jshint maxcomplexity:7*/
+		var log, warn, groupStart, groupEnd;
+
+		if(typeof console === 'undefined') {
+			log = warn = consoleNotAvailable;
+		} else {
+			// Alias console to prevent things like uglify's drop_console option from
+			// removing console.log/error. Unhandled rejections fall into the same
+			// category as uncaught exceptions, and build tools shouldn't silence them.
+			var localConsole = console;
+			if(typeof localConsole.error === 'function'
+				&& typeof localConsole.dir === 'function') {
+				warn = function(s) {
+					localConsole.error(s);
+				};
+
+				log = function(s) {
+					localConsole.log(s);
+				};
+
+				if(typeof localConsole.groupCollapsed === 'function') {
+					groupStart = function(s) {
+						localConsole.groupCollapsed(s);
+					};
+					groupEnd = function() {
+						localConsole.groupEnd();
+					};
+				}
+			} else {
+				// IE8 has console.log and JSON, so we can make a
+				// reasonably useful warn() from those.
+				// Credit to webpro (https://github.com/webpro) for this idea
+				if (typeof localConsole.log ==='function'
+					&& typeof JSON !== 'undefined') {
+					log = warn = function (x) {
+						if(typeof x !== 'string') {
+							try {
+								x = JSON.stringify(x);
+							} catch(e) {}
+						}
+						localConsole.log(x);
+					};
+				}
+			}
+		}
+
+		return {
+			msg: log,
+			warn: warn,
+			groupStart: groupStart || warn,
+			groupEnd: groupEnd || consoleNotAvailable
+		};
+	}
+
+	function consoleNotAvailable() {}
+
+	return ConsoleReporter;
+
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+
+},{"./error":31}],29:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function(require) {
+
+	var defaultStackJumpSeparator = 'from execution context:';
+	var defaultStackFilter = /[\s\(\/\\](node|module|timers)\.js:|when([\/\\]{1,2}(lib|monitor|es6-shim)[\/\\]{1,2}|\.js)|(new\sPromise)\b|(\b(PromiseMonitor|ConsoleReporter|Scheduler|RunHandlerTask|ProgressTask|Promise|.*Handler)\.[\w_]\w\w+\b)|\b(tryCatch\w+|getHandler\w*)\b/i;
+
+	var setTimer = require('../lib/env').setTimer;
+	var error = require('./error');
+
+	var executionContext = [];
+
+	function PromiseMonitor(reporter) {
+		this.logDelay = 0;
+		this.stackFilter = defaultStackFilter;
+		this.stackJumpSeparator = defaultStackJumpSeparator;
+		this.filterDuplicateFrames = true;
+
+		this._reporter = reporter;
+		if(typeof reporter.configurePromiseMonitor === 'function') {
+			reporter.configurePromiseMonitor(this);
+		}
+
+		this._traces = [];
+		this._traceTask = 0;
+
+		var self = this;
+		this._doLogTraces = function() {
+			self._logTraces();
+		};
+	}
+
+	PromiseMonitor.prototype.monitor = function(Promise) {
+		var self = this;
+		Promise.createContext = function(p, context) {
+			p.context = self.createContext(p, context);
+		};
+
+		Promise.enterContext = function(p) {
+			executionContext.push(p.context);
+		};
+
+		Promise.exitContext = function() {
+			executionContext.pop();
+		};
+
+		Promise.onPotentiallyUnhandledRejection = function(rejection, extraContext) {
+			return self.addTrace(rejection, extraContext);
+		};
+
+		Promise.onPotentiallyUnhandledRejectionHandled = function(rejection) {
+			return self.removeTrace(rejection);
+		};
+
+		Promise.onFatalRejection = function(rejection, extraContext) {
+			return self.fatal(rejection, extraContext);
+		};
+
+		return this;
+	};
+
+	PromiseMonitor.prototype.createContext = function(at, parentContext) {
+		var context = {
+			parent: parentContext || executionContext[executionContext.length - 1],
+			stack: void 0
+		};
+		error.captureStack(context, at.constructor);
+		return context;
+	};
+
+	PromiseMonitor.prototype.addTrace = function(handler, extraContext) {
+		var t, i;
+
+		for(i = this._traces.length-1; i >= 0; --i) {
+			t = this._traces[i];
+			if(t.handler === handler) {
+				break;
+			}
+		}
+
+		if(i >= 0) {
+			t.extraContext = extraContext;
+		} else {
+			this._traces.push({
+				handler: handler,
+				extraContext: extraContext
+			});
+		}
+
+		this.logTraces();
+	};
+
+	PromiseMonitor.prototype.removeTrace = function(/*handler*/) {
+		this.logTraces();
+	};
+
+	PromiseMonitor.prototype.fatal = function(handler, extraContext) {
+		var err = new Error();
+		err.stack = this._createLongTrace(handler.value, handler.context, extraContext).join('\n');
+		setTimer(function() {
+			throw err;
+		}, 0);
+	};
+
+	PromiseMonitor.prototype.logTraces = function() {
+		if(!this._traceTask) {
+			this._traceTask = setTimer(this._doLogTraces, this.logDelay);
+		}
+	};
+
+	PromiseMonitor.prototype._logTraces = function() {
+		this._traceTask = void 0;
+		this._traces = this._traces.filter(filterHandled);
+		this._reporter.log(this.formatTraces(this._traces));
+	};
+
+
+	PromiseMonitor.prototype.formatTraces = function(traces) {
+		return traces.map(function(t) {
+			return this._createLongTrace(t.handler.value, t.handler.context, t.extraContext);
+		}, this);
+	};
+
+	PromiseMonitor.prototype._createLongTrace = function(e, context, extraContext) {
+		var trace = error.parse(e) || [String(e) + ' (WARNING: non-Error used)'];
+		trace = filterFrames(this.stackFilter, trace, 0);
+		this._appendContext(trace, context);
+		this._appendContext(trace, extraContext);
+		return this.filterDuplicateFrames ? this._removeDuplicates(trace) : trace;
+	};
+
+	PromiseMonitor.prototype._removeDuplicates = function(trace) {
+		var seen = {};
+		var sep = this.stackJumpSeparator;
+		var count = 0;
+		return trace.reduceRight(function(deduped, line, i) {
+			if(i === 0) {
+				deduped.unshift(line);
+			} else if(line === sep) {
+				if(count > 0) {
+					deduped.unshift(line);
+					count = 0;
+				}
+			} else if(!seen[line]) {
+				seen[line] = true;
+				deduped.unshift(line);
+				++count;
+			}
+			return deduped;
+		}, []);
+	};
+
+	PromiseMonitor.prototype._appendContext = function(trace, context) {
+		trace.push.apply(trace, this._createTrace(context));
+	};
+
+	PromiseMonitor.prototype._createTrace = function(traceChain) {
+		var trace = [];
+		var stack;
+
+		while(traceChain) {
+			stack = error.parse(traceChain);
+
+			if (stack) {
+				stack = filterFrames(this.stackFilter, stack);
+				appendStack(trace, stack, this.stackJumpSeparator);
+			}
+
+			traceChain = traceChain.parent;
+		}
+
+		return trace;
+	};
+
+	function appendStack(trace, stack, separator) {
+		if (stack.length > 1) {
+			stack[0] = separator;
+			trace.push.apply(trace, stack);
+		}
+	}
+
+	function filterFrames(stackFilter, stack) {
+		return stack.filter(function(frame) {
+			return !stackFilter.test(frame);
+		});
+	}
+
+	function filterHandled(t) {
+		return !t.handler.handled;
+	}
+
+	return PromiseMonitor;
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+
+},{"../lib/env":22,"./error":31}],30:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function(require) {
+
+	var monitor = require('../monitor');
+	var Promise = require('../when').Promise;
+
+	return monitor(Promise);
+
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+
+},{"../monitor":27,"../when":38}],31:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function() {
+
+	var parse, captureStack, format;
+
+	if(Error.captureStackTrace) {
+		// Use Error.captureStackTrace if available
+		parse = function(e) {
+			return e && e.stack && e.stack.split('\n');
+		};
+
+		format = formatAsString;
+		captureStack = Error.captureStackTrace;
+
+	} else {
+		// Otherwise, do minimal feature detection to determine
+		// how to capture and format reasonable stacks.
+		parse = function(e) {
+			var stack = e && e.stack && e.stack.split('\n');
+			if(stack && e.message) {
+				stack.unshift(e.message);
+			}
+			return stack;
+		};
+
+		(function() {
+			var e = new Error();
+			if(typeof e.stack !== 'string') {
+				format = formatAsString;
+				captureStack = captureSpiderMonkeyStack;
+			} else {
+				format = formatAsErrorWithStack;
+				captureStack = useStackDirectly;
+			}
+		}());
+	}
+
+	function captureSpiderMonkeyStack(host) {
+		try {
+			throw new Error();
+		} catch(err) {
+			host.stack = err.stack;
+		}
+	}
+
+	function useStackDirectly(host) {
+		host.stack = new Error().stack;
+	}
+
+	function formatAsString(longTrace) {
+		return join(longTrace);
+	}
+
+	function formatAsErrorWithStack(longTrace) {
+		var e = new Error();
+		e.stack = formatAsString(longTrace);
+		return e;
+	}
+
+	// About 5-10x faster than String.prototype.join o_O
+	function join(a) {
+		var sep = false;
+		var s = '';
+		for(var i=0; i< a.length; ++i) {
+			if(sep) {
+				s += '\n' + a[i];
+			} else {
+				s+= a[i];
+				sep = true;
+			}
+		}
+		return s;
+	}
+
+	return {
+		parse: parse,
+		format: format,
+		captureStack: captureStack
+	};
+
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+
+},{}],32:[function(require,module,exports){
 /** @license MIT License (c) copyright 2013 original author or authors */
 
 /**
@@ -2980,7 +3460,7 @@ define(function(require) {
 
 
 
-},{"./lib/apply":11,"./lib/env":21,"./lib/liftAll":23,"./when":32}],27:[function(require,module,exports){
+},{"./lib/apply":12,"./lib/env":22,"./lib/liftAll":24,"./when":38}],33:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -3021,7 +3501,7 @@ define(function(require) {
 
 
 
-},{"./when":32}],28:[function(require,module,exports){
+},{"./when":38}],34:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -3073,7 +3553,7 @@ define(function(require) {
 
 
 
-},{"./when":32}],29:[function(require,module,exports){
+},{"./when":38}],35:[function(require,module,exports){
 /** @license MIT License (c) copyright 2012-2013 original author or authors */
 
 /**
@@ -3189,7 +3669,7 @@ define(function(require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./cancelable":3,"./when":32}],30:[function(require,module,exports){
+},{"./cancelable":4,"./when":38}],36:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -3237,7 +3717,7 @@ define(function(require) {
 
 
 
-},{"./when":32}],31:[function(require,module,exports){
+},{"./when":38}],37:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -3266,7 +3746,7 @@ define(function(require) {
 
 
 
-},{"./when":32}],32:[function(require,module,exports){
+},{"./when":38}],38:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 
 /**
@@ -3274,7 +3754,7 @@ define(function(require) {
  * when is part of the cujoJS family of libraries (http://cujojs.com/)
  * @author Brian Cavalier
  * @author John Hann
- * @version 3.6.4
+ * @version 3.7.2
  */
 (function(define) { 'use strict';
 define(function (require) {
@@ -3497,7 +3977,7 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./lib/Promise":8,"./lib/TimeoutError":10,"./lib/apply":11,"./lib/decorators/array":12,"./lib/decorators/flow":13,"./lib/decorators/fold":14,"./lib/decorators/inspect":15,"./lib/decorators/iterate":16,"./lib/decorators/progress":17,"./lib/decorators/timed":18,"./lib/decorators/unhandledRejection":19,"./lib/decorators/with":20}]},{},[1])
+},{"./lib/Promise":9,"./lib/TimeoutError":11,"./lib/apply":12,"./lib/decorators/array":13,"./lib/decorators/flow":14,"./lib/decorators/fold":15,"./lib/decorators/inspect":16,"./lib/decorators/iterate":17,"./lib/decorators/progress":18,"./lib/decorators/timed":19,"./lib/decorators/unhandledRejection":20,"./lib/decorators/with":21}]},{},[1])
 (1)
 });
 ;
