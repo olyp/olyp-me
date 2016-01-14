@@ -30,8 +30,10 @@
 (defn get-unoptimizable-assets [env]
   (concat
    (if (= :dev env)
-     (assets/load-bundle "public" "lib.js" ["/js/lib/react-with-addons-0.12.2.js"])
-     (assets/load-bundle "public" "lib.js" ["/js/lib/react-with-addons-0.12.2.min.js"]))))
+     (assets/load-bundle "public" "lib.js" ["/js/lib/react-with-addons-0.12.2.js"
+                                            "/js/lib/mori-0.3.2.js"])
+     (assets/load-bundle "public" "lib.js" ["/js/lib/react-with-addons-0.12.2.min.js"
+                                            "/js/lib/mori-0.3.2.js"]))))
 
 (defn get-optimizable-assets []
   (concat
@@ -40,7 +42,6 @@
                                           "/js/lib/jquery-2.1.3.js"
                                           "/js/lib/when-3.7.2.js"
                                           "/js/lib/redux-3.0.5.js"
-                                          "/js/lib/mori-0.3.2.js"
                                           "/js/olyp_app_utils/http.js"
                                           "/bootstrap-datepicker/js/bootstrap-datepicker.js"])
    (assets/load-bundle "public" "app.css" ["/bootstrap/css/bootstrap.css"
