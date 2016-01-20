@@ -6,56 +6,67 @@ a {
     cursor:pointer;
 }
 
-.calendar-grid {
+
+.navbar-default .custom-inline-navbar-nav > li > a {
+    color: #777;
+}
+
+.custom-inline-navbar-nav {
+    float: left;
+    margin: 0;
+}
+.custom-inline-navbar-nav > li {
+    float: left;
+}
+.custom-inline-navbar-nav > li > a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.calendar-grid-week {
     min-width: 800px;
 }
 
-.calendar-grid-title {
-    text-align: center;
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.calendar-grid-hours {
+.calendar-grid-week-hours {
     float: left;
     width: 60px;
 }
 
-.calendar-grid-content {
+.calendar-grid-week-content {
     overflow: hidden;
 }
 
-.calendar-grid-content-no-data {
+.calendar-grid-week-content-no-data {
     background-color: #f7f7f7;
 }
 
-.calendar-grid-column {
+.calendar-grid-week-column {
     float: left;
     width: 14.2%;
     border-left: 1px solid #eee;
 }
 
-.calendar-grid-hours-header,
-.calendar-grid-day-header {
+.calendar-grid-week-hours-header,
+.calendar-grid-week-day-header {
     height: 30px;
 }
 
-.calendar-grid-day-header {
+.calendar-grid-week-day-header {
     text-align: center;
     color: #999;
     font-size: 12px;
 }
 
-.calendar-grid-hour-cell {
+.calendar-grid-week-hour-cell {
     height: 40px;
     border-top: 1px solid #eee;
 }
 
-.calendar-grid-day-reservations {
+.calendar-grid-week-day-reservations {
     position: relative;
 }
 
-.calendar-grid-reservation {
+.calendar-grid-week-reservation {
     position: absolute;
     left: -1px;
     right: -1px;
@@ -64,43 +75,69 @@ a {
     background: rgb(241, 85, 35);
 }
 
-.calendar-grid-reservation-overlaps-previous {
+.calendar-grid-week-reservation-overlaps-previous {
     border-top: none;
 }
 
-.calendar-grid-reservation-overlaps-next {
+.calendar-grid-week-reservation-overlaps-next {
     border-bottom: none;
 }
 
-.calendar-grid-reservation-buttons {
+.calendar-grid-week-reservation-buttons {
     position: absolute;
     bottom: 0px;
     right: 0px;
 }
 
-.calendar-grid-reservation-buttons a {
+.calendar-grid-week-reservation-buttons a {
     color: rgb(160, 30, 8);
 }
 
-.calendar-grid-reservation-buttons a:hover {
+.calendar-grid-week-reservation-buttons a:hover {
     text-decoration: none;
     color: rgb(160, 30, 8);
 }
 
-.calendar-grid-reservation-user-name,
-.calendar-grid-reservation-comment {
+.calendar-grid-week-reservation-user-name,
+.calendar-grid-week-reservation-comment {
     font-size: 11px;
 }
 
-.calendar-grid-reservation-user-name {
+.calendar-grid-week-reservation-user-name {
     font-weight: bold;
 }
 
-.calendar-grid-reservation-comment {
+.calendar-grid-week-reservation-comment {
     overflow: hidden;
     white-space: nowrap;
 }
 
 .change-password-form {
     max-width: 400px;
+}
+
+.calendar-grid-title {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+@media only screen and (min-width: 800px) {
+    .calendar-grid-week { display: none; }
+
+    .booking-form-calendar-grid { display: flex; flex-direction: row; }
+    .calendar-grid { flex: auto; order: 1; margin-right: 15px; }
+    .booking-form { width: 300px; order: 2; }
+    /*.calendar-grid { float: left; margin-right: -200px; }*/
+    /*.booking-form { float: right; width: 300px; }*/
+}
+
+@media only screen and (min-width: 1130px) {
+    .calendar-grid-agenda { display: none; }
+    .calendar-grid-week { display: block; }
+    .booking-form-calendar-grid-separator { display: none; }
+}
+
+@media only screen and (max-width: 799px) {
+    .calendar-grid-week { display: none; }
 }

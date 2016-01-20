@@ -32,6 +32,31 @@
             "comment", "")
     }
 
+    function updateBookingFormFrom(bookingForm, fromVal) {
+        bookingForm = mori.assoc(bookingForm, "from", fromVal);
+
+        var toVal = mori.get(bookingForm, "to");
+        var newMinToVal = moment(fromVal).add(30, "minutes").valueOf();
+        if (toVal < newMinToVal) {
+            bookingForm = mori.assoc(bookingForm, "to", newMinToVal);
+        }
+
+        return bookingForm;
+    }
+
+    function updateBookingFormTo(bookingForm, toVal) {
+        bookingForm = mori.assoc(bookingForm, "to", toVal);
+
+        var fromVal = mori.get(bookingForm, "from");
+        var newMaxFromVal = moment(toVal).subtract(30, "minutes").valueOf();
+        if (fromVal > newMaxFromVal) {
+            bookingForm = mori.assoc(bookingForm, "from", newMaxFromVal);
+
+        }
+
+        return mori.assoc(bookingForm, "to", toVal);
+    }
+
     function createReducer() {
         return function (state, action) {
             switch (action.type) {
@@ -44,15 +69,17 @@
                 case "CHANGE_WEEK_SUCCESS":
                     return mori.assoc(state, "reservations", action.reservations);
                 case "SET_BOOKING_FORM_FROM":
-                    return mori.assocIn(state, ["bookingForm", "from"], action.value);
+                    return mori.updateIn(state, ["bookingForm"], mori.curry(updateBookingFormFrom, action.value));
                 case "SET_BOOKING_FORM_TO":
-                    return mori.assocIn(state, ["bookingForm", "to"], action.value);
+                    return mori.updateIn(state, ["bookingForm"], mori.curry(updateBookingFormTo, action.value));
                 case "SET_BOOKING_FORM_COMMENT":
                     return mori.assocIn(state, ["bookingForm", "comment"], action.value);
                 case "SUBMIT_BOOKING_FORM_START":
                     return mori.assocIn(state, ["bookingForm", "isSubmitting"], true);
                 case "SUBMIT_BOOKING_FORM_SUCCESS":
-                    return mori.assoc(state, "bookingForm", createBookingForm());
+                    return mori.assoc(state, "bookingForm",
+                        mori.assoc(createBookingForm(),
+                            "successMessage", "Your booking has been filed!"));
                 case "SUBMIT_BOOKING_FORM_ERROR":
                     return mori.updateIn(state, ["bookingForm"], mori.curry(mori.assoc,
                         "isSubmitting", false,
