@@ -348,6 +348,19 @@ var BOOKING_COMPONENTS = (function () {
                                 );
                             })));
                 }, calendarDays))));
+    }, {
+        componentDidMount: function () {
+            this.scrollToBottom();
+        },
+
+        componentDidUpdate: function () {
+            this.scrollToBottom();
+        },
+
+        scrollToBottom: function () {
+            var el = this.getDOMNode();
+            el.scrollTop = el.scrollHeight;
+        }
     });
 
     var CalendarGrid = UTIL.createComponent(function CalendarGrid(props) {
@@ -355,7 +368,7 @@ var BOOKING_COMPONENTS = (function () {
         var baseDay = mori.get(props.calendar, "baseDay");
 
         return React.DOM.div({className: "calendar-grid"},
-            React.DOM.div({style: {marginBottom: 14}},
+            React.DOM.div({style: {marginBottom: 14}, className: "calendar-grid-header"},
                 React.DOM.a({className: "btn btn-default", onClick: function () { props.actions.gotoToday(); }}, "Today"),
                 " ",
                 React.DOM.div({className: "btn-group", style: {marginRight: 10}},
