@@ -43,10 +43,13 @@
                                           "/js/lib/when-3.7.2.js"
                                           "/js/lib/redux-3.0.5.js"
                                           "/js/olyp_app_utils/http.js"
-                                          "/bootstrap-datepicker/js/bootstrap-datepicker.js"])
+                                          "/jquery-ui-1.11.4.custom/jquery-ui.js"])
    (assets/load-bundle "public" "app.css" ["/bootstrap/css/bootstrap.css"
                                            "/bootstrap/css/bootstrap-theme.css"
-                                           "/bootstrap-datepicker/css/datepicker.css"
+                                           "/jquery-ui-1.11.4.custom/jquery-ui.css"
+                                           "/jquery-ui-1.11.4.custom/jquery-ui.structure.css"
+                                           "/jquery-ui-1.11.4.custom/jquery-ui.structure.css"
+                                           "/jquery-ui-1.11.4.custom/jquery-ui.theme.css"
                                            "/css/app.css"])
    (assets/load-bundle "public" "booking.js" ["/js/util.js"
                                               "/js/booking/booking_components.js"

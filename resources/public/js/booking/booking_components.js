@@ -14,22 +14,42 @@ var BOOKING_COMPONENTS = (function () {
 
     var BookingFormDateTimeFields = React.createFactory(React.createClass({
         componentDidMount: function () {
-            var calendarButton = this.refs["calendarButton"].getDOMNode();
+            var calendarInput = this.refs["calendarInput"].getDOMNode();
 
-            jQuery(calendarButton)
-                .datepicker()
-                .on("changeDate", function (e) {
-                    this.datePickerDate =  moment(e.date).format("DD.MM.YYYY");
-                    this.updateDate();
-                    jQuery(calendarButton).datepicker("hide");
-                }.bind(this));
-            this.datePickerDate = moment(this.props.value).format("DD.MM.YYYY");
+            jQuery(calendarInput)
+                .datepicker({
+                    dateFormat: "dd.mm.yy",
+                    onSelect: function (dateText) {
+                        this.datePickerDate = dateText;
+                        this.updateDate();
+                        console.log(dateText);
+                    }.bind(this)
+                })
+                .datepicker("setDate", moment(this.props.value).toDate());
+
+            //value: date.format("DD.MM.YYYY")
+            //var calendarButton = this.refs["calendarButton"].getDOMNode();
+
+
+            //jQuery(calendarButton)
+            //    .datepicker()
+            //    .on("changeDate", function (e) {
+            //        console.log("DATE CHANGED!")
+            //        this.datePickerDate =  moment(e.date).format("DD.MM.YYYY");
+            //        this.updateDate();
+            //        jQuery(calendarButton).datepicker("hide");
+            //    }.bind(this));
+            //this.datePickerDate = moment(this.props.value).format("DD.MM.YYYY");
         },
 
         updateDate: function () {
             var hourSelect = this.refs["hourSelect"].getDOMNode();
             var newDate = moment(this.datePickerDate + " " + hourSelect.value, "DD.MM.YYYY HH:mm");
             this.props.onChange(newDate.valueOf());
+        },
+
+        onHourSelectChange: function () {
+            this.updateDate();
         },
 
         decrementTime: function () {
@@ -58,7 +78,11 @@ var BOOKING_COMPONENTS = (function () {
 
         componentDidUpdate: function () {
             // If the date is set from the outside, we need to update the date picker internal state here.
-            // Not implemented yet.
+            var calendarInput = this.refs["calendarInput"].getDOMNode();
+            jQuery(calendarInput)
+                .datepicker("setDate", moment(this.props.value).toDate());
+
+            this.datePickerDate = moment(jQuery(calendarInput).datepicker("getDate")).format("DD.MM.YYYY");
         },
 
 
@@ -71,7 +95,7 @@ var BOOKING_COMPONENTS = (function () {
                         React.DOM.div({className: "input-group-btn"},
                             React.DOM.a({className: "btn btn-default", onClick: this.decrementTime, onTouchEnd: function (e) { e.preventDefault(); this.decrementTime(); }.bind(this)},
                                 React.DOM.span({className: "glyphicon glyphicon-minus"}))),
-                        React.DOM.select({className: "form-control", value: date.format("HH:mm"), ref: "hourSelect", onChange: this.updateDate},
+                        React.DOM.select({className: "form-control", value: date.format("HH:mm"), ref: "hourSelect", onChange: this.onHourSelectChange},
                             hours.map(function (hour) {
                                 return [
                                     React.DOM.option({key: "hour-" + hour + "-0"}, padNum(hour) + ":00"),
@@ -85,14 +109,8 @@ var BOOKING_COMPONENTS = (function () {
                     React.DOM.div({className: "input-group input-group-lg"},
                         React.DOM.div({className: "input-group-btn"},
                             React.DOM.a({className: "btn btn-default", onClick: this.decrementDate, onTouchEnd: function (e) { e.preventDefault(); this.decrementDate(); }.bind(this)},
-                                React.DOM.span({className: "glyphicon glyphicon-minus"})),
-                            React.DOM.a({
-                                className: "btn btn-default",
-                                ref: "calendarButton",
-                                "data-date-format": "DD.MM.YYYY",
-                                "data-date": date.format("DD.MM.YYYY")
-                            }, React.DOM.span({className: "glyphicon glyphicon-calendar"}))),
-                        React.DOM.input({type: "text", className: "form-control", value: date.format("DD.MM.YYYY"), readOnly: true, size: 10}),
+                                React.DOM.span({className: "glyphicon glyphicon-minus"}))),
+                        React.DOM.input({ref: "calendarInput", type: "text", className: "form-control", readOnly: true, size: 10}),
                         React.DOM.div({className: "input-group-btn"},
                             React.DOM.a({className: "btn btn-default", onClick: this.incrementDate, onTouchEnd: function (e) { e.preventDefault(); this.incrementDate(); }.bind(this)},
                                 React.DOM.span({className: "glyphicon glyphicon-plus"}))))));
