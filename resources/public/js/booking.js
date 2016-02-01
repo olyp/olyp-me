@@ -51,10 +51,9 @@
         var newMaxFromVal = moment(toVal).subtract(30, "minutes").valueOf();
         if (fromVal > newMaxFromVal) {
             bookingForm = mori.assoc(bookingForm, "from", newMaxFromVal);
-
         }
 
-        return mori.assoc(bookingForm, "to", toVal);
+        return bookingForm;
     }
 
     function createReducer() {
