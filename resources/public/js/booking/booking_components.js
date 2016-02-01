@@ -25,6 +25,7 @@ var BOOKING_COMPONENTS = (function () {
                     }.bind(this)
                 })
                 .datepicker("setDate", moment(this.props.value).toDate());
+            this.setDatePickerDate();
         },
 
         updateDate: function () {
@@ -67,6 +68,11 @@ var BOOKING_COMPONENTS = (function () {
             jQuery(calendarInput)
                 .datepicker("setDate", moment(this.props.value).toDate());
 
+            this.setDatePickerDate();
+        },
+
+        setDatePickerDate: function () {
+            var calendarInput = this.refs["calendarInput"].getDOMNode();
             this.datePickerDate = moment(jQuery(calendarInput).datepicker("getDate")).format("DD.MM.YYYY");
         },
 
