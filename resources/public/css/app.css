@@ -42,6 +42,7 @@ a {
 
 .calendar-grid-week-column {
     float: left;
+    float: left;
     width: 14.2%;
     border-left: 1px solid #eee;
 }
@@ -127,8 +128,8 @@ a {
 
     .booking-form-calendar-grid { display: flex; flex-direction: row; position: absolute; left: 25px; right: 25px; bottom: 10px; top: 100px; }
     .calendar-grid { flex: auto; order: 1; margin-right: 15px; display: flex; flex-flow: column; }
-    .calendar-grid-header { flex: auto; }
     .calendar-grid-week { overflow-y: auto; }
+    .calendar-grid-agenda { flex: auto; padding: 0 15px; }
     .booking-form { width: 300px; order: 2; }
 }
 

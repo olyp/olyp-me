@@ -220,7 +220,7 @@ var BOOKING_COMPONENTS = (function () {
     }
 
     var CalendarGridAgenda = UTIL.createComponent(function CalendarGridAgenda(props) {
-        return React.DOM.div({className: "calendar-grid-agenda container-fluid"},
+        return React.DOM.div({className: "calendar-grid-agenda"},
             mori.toJs(mori.map(function (reservation) {
                 var fromVal = mori.get(reservation, "from");
                 var toVal = mori.get(reservation, "to");
