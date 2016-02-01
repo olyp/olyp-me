@@ -255,7 +255,7 @@ var BOOKING_COMPONENTS = (function () {
                             className: "btn btn-danger",
                             style: {marginTop: "1em"}
                         }, React.DOM.span({className: "glyphicon glyphicon-trash"}))));
-            }, props.reservations)));
+            }, mori.sortBy(mori.curry(mori.get, "from"), props.reservations))));
     });
 
     var CalendarGridWeek = UTIL.createComponent(function CalendarGridWeek(props) {
