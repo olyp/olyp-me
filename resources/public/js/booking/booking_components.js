@@ -22,24 +22,9 @@ var BOOKING_COMPONENTS = (function () {
                     onSelect: function (dateText) {
                         this.datePickerDate = dateText;
                         this.updateDate();
-                        console.log(dateText);
                     }.bind(this)
                 })
                 .datepicker("setDate", moment(this.props.value).toDate());
-
-            //value: date.format("DD.MM.YYYY")
-            //var calendarButton = this.refs["calendarButton"].getDOMNode();
-
-
-            //jQuery(calendarButton)
-            //    .datepicker()
-            //    .on("changeDate", function (e) {
-            //        console.log("DATE CHANGED!")
-            //        this.datePickerDate =  moment(e.date).format("DD.MM.YYYY");
-            //        this.updateDate();
-            //        jQuery(calendarButton).datepicker("hide");
-            //    }.bind(this));
-            //this.datePickerDate = moment(this.props.value).format("DD.MM.YYYY");
         },
 
         updateDate: function () {
