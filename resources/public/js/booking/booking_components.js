@@ -85,14 +85,13 @@ var BOOKING_COMPONENTS = (function () {
                     React.DOM.div({className: "input-group input-group-lg"},
                         React.DOM.div({className: "input-group-btn"},
                             React.DOM.a({className: "btn btn-default", onClick: this.decrementDate, onTouchEnd: function (e) { e.preventDefault(); this.decrementDate(); }.bind(this)},
-                                React.DOM.span({className: "glyphicon glyphicon-minus"}))),
-                        React.DOM.div({className: "input-group-addon"},
-                            React.DOM.span({
-                                className: "glyphicon glyphicon-calendar",
+                                React.DOM.span({className: "glyphicon glyphicon-minus"})),
+                            React.DOM.a({
+                                className: "btn btn-default",
                                 ref: "calendarButton",
                                 "data-date-format": "DD.MM.YYYY",
                                 "data-date": date.format("DD.MM.YYYY")
-                            })),
+                            }, React.DOM.span({className: "glyphicon glyphicon-calendar"}))),
                         React.DOM.input({type: "text", className: "form-control", value: date.format("DD.MM.YYYY"), readOnly: true, size: 10}),
                         React.DOM.div({className: "input-group-btn"},
                             React.DOM.a({className: "btn btn-default", onClick: this.incrementDate, onTouchEnd: function (e) { e.preventDefault(); this.incrementDate(); }.bind(this)},
