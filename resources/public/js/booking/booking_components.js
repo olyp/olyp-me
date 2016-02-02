@@ -284,8 +284,13 @@ var BOOKING_COMPONENTS = (function () {
             React.DOM.div({className: "calendar-grid-week-hours"},
                 React.DOM.div({className: "calendar-grid-week-hours-header"}),
                 hours.map(function (hour) {
+                    var classNames = ["calendar-grid-week-hour-cell"];
+                    if (hour % 2 === 0)
+                        classNames.push("calendar-grid-week-hour-cell-colored-row");
+
+
                     return React.DOM.div({
-                        key: "hour-" + hour, className: "calendar-grid-week-hour-cell"
+                        key: "hour-" + hour, className: classNames.join(" ")
                     }, formatHour(hour));
                 })),
             React.DOM.div({className: calendarGridClassNames.join(" ")},
@@ -319,7 +324,11 @@ var BOOKING_COMPONENTS = (function () {
                         React.DOM.div({className: "calendar-grid-week-day-header"}, label + " " + day.format("DD.MM")),
                         React.DOM.div({className: "calendar-grid-week-day-reservations"},
                             hours.map(function (hour) {
-                                return React.DOM.div({key: "hour-" + hour, className: "calendar-grid-week-hour-cell"});
+                                var classNames = ["calendar-grid-week-hour-cell"];
+                                if (hour % 2 === 0)
+                                    classNames.push("calendar-grid-week-hour-cell-colored-row");
+                                
+                                return React.DOM.div({key: "hour-" + hour, className: classNames.join(" ")});
                             }),
                             reservationsForDay.map(function (reservation) {
                                 var dayStartHourOffset = (reservation.from.valueOf() - dayStart.valueOf()) / 1000 / 60 / 60;

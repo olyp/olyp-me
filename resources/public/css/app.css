@@ -63,6 +63,10 @@ a {
     border-top: 1px solid #eee;
 }
 
+.calendar-grid-week-hour-cell-colored-row {
+    background: #f7f7f7;
+}
+
 .calendar-grid-week-day-reservations {
     position: relative;
 }
