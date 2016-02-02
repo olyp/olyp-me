@@ -59,7 +59,7 @@ a {
 }
 
 .calendar-grid-week-hour-cell {
-    height: 40px;
+    height: 25px;
     border-top: 1px solid #eee;
 }
 
@@ -78,6 +78,7 @@ a {
     border: 2px solid rgb(200, 45, 15);
     padding: 3px;
     background: rgb(241, 85, 35);
+    overflow: hidden;
 }
 
 .calendar-grid-week-reservation-overlaps-previous {

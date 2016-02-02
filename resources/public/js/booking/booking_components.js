@@ -194,7 +194,7 @@ var BOOKING_COMPONENTS = (function () {
     }
 
 
-    var HOUR_HEIGHT = 40;
+    var HOUR_HEIGHT = 25;
 
     function getOffset(offset) {
         var hoursOffset = Math.floor(offset);
@@ -327,7 +327,7 @@ var BOOKING_COMPONENTS = (function () {
                                 var classNames = ["calendar-grid-week-hour-cell"];
                                 if (hour % 2 === 0)
                                     classNames.push("calendar-grid-week-hour-cell-colored-row");
-                                
+
                                 return React.DOM.div({key: "hour-" + hour, className: classNames.join(" ")});
                             }),
                             reservationsForDay.map(function (reservation) {
@@ -350,13 +350,14 @@ var BOOKING_COMPONENTS = (function () {
                                     {
                                         key: "reservation-" + topOffset + "-" + bottomOffset,
                                         className: classNames.join(" "),
+                                        title: reservation.comment,
                                         style: {
                                             top: Math.max(topOffset, 0) + "px",
                                             bottom: ((HOUR_HEIGHT * 24) - bottomOffset) + "px"
                                         }
                                     },
                                     React.DOM.div({className: "calendar-grid-week-reservation-user-name"}, reservation.booking.user.name),
-                                    React.DOM.div({className: "calendar-grid-week-reservation-comment", title: reservation.comment}, reservation.comment),
+                                    React.DOM.div({className: "calendar-grid-week-reservation-comment"}, reservation.comment),
                                     props.currentUserId === reservation.booking.user.id && CalendarGridReservationButtons({
                                         dispatch: props.dispatch,
                                         actions: props.actions,
