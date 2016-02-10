@@ -27,8 +27,8 @@
 
     function createBookingForm() {
         return mori.hashMap(
-            "from", moment().hour(14).minute(0).valueOf(),
-            "to", moment().hour(15).minute(0).valueOf(),
+            "from", moment().startOf("day").hour(14).valueOf(),
+            "to", moment().startOf("day").hour(15).valueOf(),
             "comment", "")
     }
 
