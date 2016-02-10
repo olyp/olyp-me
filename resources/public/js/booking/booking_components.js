@@ -194,15 +194,11 @@ var BOOKING_COMPONENTS = (function () {
     }
 
 
-    var HOUR_HEIGHT = 25;
+    var HALF_HOUR_HEIGHT = 13;
+    var HOUR_HEIGHT = HALF_HOUR_HEIGHT * 2;
 
     function getOffset(offset) {
-        var hoursOffset = Math.floor(offset);
-        if (hoursOffset === 0) {
-            return 0;
-        } else {
-            return hoursOffset * HOUR_HEIGHT + ((offset % hoursOffset) * HOUR_HEIGHT);
-        }
+        return (offset / 30) * HALF_HOUR_HEIGHT;
     }
 
     function currentWeekSummary(baseDayVal, firstDayVal, lastDayVal) {
@@ -331,13 +327,13 @@ var BOOKING_COMPONENTS = (function () {
                                 return React.DOM.div({key: "hour-" + hour, className: classNames.join(" ")});
                             }),
                             reservationsForDay.map(function (reservation) {
-                                var dayStartHourOffset = (reservation.from.valueOf() - dayStart.valueOf()) / 1000 / 60 / 60;
-                                var reservationLengthOffset = (reservation.to.valueOf() - reservation.from.valueOf()) / 1000 / 60 / 60;
+                                var dayStartHourOffsetMinutes = (reservation.from.valueOf() - dayStart.valueOf()) / 1000 / 60;
+                                var reservationLengthOffsetMinutes = (reservation.to.valueOf() - reservation.from.valueOf()) / 1000 / 60;
                                 var classNames = ["calendar-grid-week-reservation"];
 
-                                var topOffset = getOffset(dayStartHourOffset);
-                                var bottomOffset = topOffset + getOffset(reservationLengthOffset);
-
+                                var topOffset = getOffset(dayStartHourOffsetMinutes);
+                                var bottomOffset = topOffset + getOffset(reservationLengthOffsetMinutes);
+                                
                                 if (topOffset < 0) {
                                     classNames.push("calendar-grid-week-reservation-overlaps-previous");
                                 }
