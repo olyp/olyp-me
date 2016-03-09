@@ -19,6 +19,7 @@ var BOOKING_COMPONENTS = (function () {
             jQuery(calendarInput)
                 .datepicker({
                     dateFormat: "dd.mm.yy",
+                    firstDay: 1,
                     onSelect: function (dateText) {
                         this.datePickerDate = dateText;
                         this.updateDate();
