@@ -182,18 +182,13 @@ var BOOKING_COMPONENTS = (function () {
         return React.DOM.span(
             {className: "calendar-grid-week-reservation-buttons"},
             React.DOM.a({
-                onClick: function () { props.actions.deleteBooking(props.reservation.booking.id); }
+                onClick: function () { props.actions.deleteBooking(mori.getIn(props.reservation, ["booking", "id"])); }
             }, React.DOM.span({className: "glyphicon glyphicon-trash"})));
     });
 
     function formatHour(hour) {
         return padNum(hour) + ":00";
     }
-
-    function reservationIntersects(booking, dayStart, dayEnd) {
-        return (booking.from.valueOf() <= dayEnd.valueOf()) && (dayStart.valueOf() <= booking.to.valueOf());
-    }
-
 
     var HALF_HOUR_HEIGHT = 13;
     var HOUR_HEIGHT = HALF_HOUR_HEIGHT * 2;
@@ -258,20 +253,6 @@ var BOOKING_COMPONENTS = (function () {
     var CalendarGridWeek = UTIL.createComponent(function CalendarGridWeek(props) {
         var calendarDays = mori.get(props.calendar, "days");
 
-        var reservations = (mori.toJs(props.reservations) || []).map(function (reservation) {
-            return {
-                id: reservation.id,
-                from: moment(reservation.from).tz("Europe/Oslo"),
-                to: moment(reservation.to).tz("Europe/Oslo"),
-                comment: reservation.comment,
-                booking: reservation.booking,
-                reservableRoom: reservation["reservable_room"]
-            }
-        });
-        reservations.sort(function (a, b) {
-            return a.from.valueOf() - b.from.valueOf();
-        });
-
         var calendarGridClassNames = ["calendar-grid-week-content"];
         if (props.reservations === null) {
             calendarGridClassNames.push("calendar-grid-week-content-no-data");
@@ -297,25 +278,16 @@ var BOOKING_COMPONENTS = (function () {
                     var dayEnd = day.clone().endOf("day");
                     var label = day.format("ddd");
 
-                    var reservationsForDay = [];
-                    if (reservations.length > 0 && reservationIntersects(reservations[0], dayStart, dayEnd)) {
+                    var dayStartVal = dayStart.valueOf();
+                    var dayEndVal = dayEnd.valueOf();
 
-                        var lastIntersectingReservation = null;
-                        for (var i = 1; i < reservations.length; i++) {
-                            if (!reservationIntersects(reservations[i], dayStart, dayEnd)) {
-                                lastIntersectingReservation = i;
-                                break;
-                            }
-                        }
 
-                        if (lastIntersectingReservation === null) {
-                            reservationsForDay = reservations;
-                            reservations = reservations.slice(reservations.length - 1);
-                        } else {
-                            reservationsForDay = reservations.slice(0, lastIntersectingReservation);
-                            reservations = reservations.slice(lastIntersectingReservation);
-                        }
-                    }
+                    var reservationsForDay = mori.filter(function (reservation) {
+                        var reservationFromVal = moment(mori.get(reservation, "from")).valueOf();
+                        var reservationToVal = moment(mori.get(reservation, "to")).valueOf();
+
+                        return reservationFromVal < dayEndVal && reservationToVal > dayStartVal;
+                    }, props.reservations);
 
                     return React.DOM.div({key: "day-" + label, className: "calendar-grid-week-column"},
                         React.DOM.div({className: "calendar-grid-week-day-header"}, label + " " + day.format("DD.MM")),
@@ -327,14 +299,17 @@ var BOOKING_COMPONENTS = (function () {
 
                                 return React.DOM.div({key: "hour-" + hour, className: classNames.join(" ")});
                             }),
-                            reservationsForDay.map(function (reservation) {
-                                var dayStartHourOffsetMinutes = (reservation.from.valueOf() - dayStart.valueOf()) / 1000 / 60;
-                                var reservationLengthOffsetMinutes = (reservation.to.valueOf() - reservation.from.valueOf()) / 1000 / 60;
+                            mori.toJs(mori.map(function (reservation) {
+                                var reservationFrom = moment(mori.get(reservation, "from"));
+                                var reservationTo = moment(mori.get(reservation, "to"));
+
+                                var dayStartHourOffsetMinutes = (reservationFrom.valueOf() - dayStartVal) / 1000 / 60;
+                                var reservationLengthOffsetMinutes = (reservationTo.valueOf() - reservationFrom.valueOf()) / 1000 / 60;
                                 var classNames = ["calendar-grid-week-reservation"];
 
                                 var topOffset = getOffset(dayStartHourOffsetMinutes);
                                 var bottomOffset = topOffset + getOffset(reservationLengthOffsetMinutes);
-                                
+
                                 if (topOffset < 0) {
                                     classNames.push("calendar-grid-week-reservation-overlaps-previous");
                                 }
@@ -342,6 +317,8 @@ var BOOKING_COMPONENTS = (function () {
                                 if (bottomOffset > (HOUR_HEIGHT * 24)) {
                                     classNames.push("calendar-grid-week-reservation-overlaps-next");
                                 }
+
+                                var user = mori.getIn(reservation, ["booking", "user"])
 
                                 return React.DOM.div(
                                     {
@@ -353,15 +330,16 @@ var BOOKING_COMPONENTS = (function () {
                                             bottom: ((HOUR_HEIGHT * 24) - bottomOffset) + "px"
                                         }
                                     },
-                                    React.DOM.div({className: "calendar-grid-week-reservation-user-name"}, reservation.booking.user.name),
-                                    React.DOM.div({className: "calendar-grid-week-reservation-comment"}, reservation.comment),
-                                    props.currentUserId === reservation.booking.user.id && CalendarGridReservationButtons({
+                                    React.DOM.div({className: "calendar-grid-week-reservation-user-name"}, mori.get(user, "name")),
+                                    React.DOM.div({className: "calendar-grid-week-reservation-comment"}, mori.get(reservation, "comment")),
+                                    props.currentUserId === mori.get(user, "id") && CalendarGridReservationButtons({
                                         dispatch: props.dispatch,
                                         actions: props.actions,
                                         reservation: reservation
                                     })
                                 );
-                            })));
+                            }, reservationsForDay))
+                        ));
                 }, calendarDays))));
     }, {
         componentDidMount: function () {
