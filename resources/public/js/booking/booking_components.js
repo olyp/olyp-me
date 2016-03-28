@@ -223,7 +223,7 @@ var BOOKING_COMPONENTS = (function () {
                     React.DOM.h2({
                         style: {borderBottom: "1px solid #ccc"}
                     }, day.format("dddd, DD.MM")),
-                    mori.isEmpty(reservationsForDay) && React.DOM.div({style: {color: "#999", fontStyle: "italic", textAlign: "center", padding: "1em"}}, "Ingen reservasjoner"),
+                    mori.isEmpty(reservationsForDay) && React.DOM.div({style: {color: "#999", fontStyle: "italic", textAlign: "center", padding: "1em"}}, "No bookings"),
                     mori.toJs(mori.map(function (reservation) {
                         var from = moment(Math.max(moment(mori.get(reservation, "from")).valueOf(), dayStartVal));
                         var to = moment(Math.min(moment(mori.get(reservation, "to")).valueOf(), dayEndVal + 1000));
