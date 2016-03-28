@@ -124,26 +124,15 @@ var BOOKING_COMPONENTS = (function () {
 
         return err.toString();
     }
-
-    var ValidationError = UTIL.createComponent(function ValidationError(props) {
-        var err = props.err;
-        if (!err) {
-            return null;
-        }
-
-        return React.DOM.div({className: "panel panel-danger"},
-            React.DOM.div({className: "panel-heading"},
-                getErrorMessageComponent(err)));
-    });
-
-    var SuccessMessage = UTIL.createComponent(function ValidationError(props) {
+    
+    var BookingFormMessage = UTIL.createComponent(function BookingFormMessage(props) {
         var msg = props.msg;
         if (!msg) {
             return null;
         }
 
-        return React.DOM.div({className: "panel panel-success"},
-            React.DOM.div({className: "panel-heading"}, msg));
+        return React.DOM.div({className: "panel " + (mori.get(msg, "isError") ? "panel-danger" : "panel-success")},
+            React.DOM.div({className: "panel-heading"}, mori.get(msg, "msg")));
     });
 
     var BookingForm = UTIL.createComponent(function BookingForm(props) {
@@ -151,8 +140,7 @@ var BOOKING_COMPONENTS = (function () {
                 e.preventDefault();
                 props.actions.submitBookingForm();
             }},
-            ValidationError({err: mori.get(props.form, "validationError")}),
-            SuccessMessage({msg: mori.get(props.form, "successMessage")}),
+            BookingFormMessage({msg: mori.get(props.form, "flashMessage")}),
             React.DOM.div({className: "form-group"},
                 React.DOM.label(null, "From"),
                 BookingFormDateTimeFields({

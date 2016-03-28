@@ -78,11 +78,11 @@
                 case "SUBMIT_BOOKING_FORM_SUCCESS":
                     return mori.assoc(state, "bookingForm",
                         mori.assoc(createBookingForm(),
-                            "successMessage", "Your booking has been filed!"));
+                            "flashMessage", mori.hashMap("msg", "Your booking has been filed!")));
                 case "SUBMIT_BOOKING_FORM_ERROR":
                     return mori.updateIn(state, ["bookingForm"], mori.curry(mori.assoc,
                         "isSubmitting", false,
-                        "validationError", action.err));
+                        "flashMessage", mori.hashMap("msg", action.err, "isError", true)));
                 default:
                     return state;
             }
