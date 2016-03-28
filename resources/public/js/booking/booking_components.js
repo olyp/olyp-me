@@ -201,41 +201,58 @@ var BOOKING_COMPONENTS = (function () {
 
     var CalendarGridAgenda = UTIL.createComponent(function CalendarGridAgenda(props) {
         return React.DOM.div({className: "calendar-grid-agenda"},
-            mori.toJs(mori.map(function (reservation) {
-                var fromVal = mori.get(reservation, "from");
-                var toVal = mori.get(reservation, "to");
+            mori.toJs(mori.map(function (dayValue) {
+                var day = moment(dayValue).tz("Europe/Oslo");
+                var dayStart = day.clone();
+                var dayEnd = day.clone().endOf("day");
+                var label = day.format("ddd");
 
-                var from = moment(fromVal);
-                var to = moment(toVal);
+                var dayStartVal = dayStart.valueOf();
+                var dayEndVal = dayEnd.valueOf();
 
-                var fromDate = from.format("DD.MM");
-                var toDate = to.format("DD.MM");
+                var reservationsForDay = mori.pipeline(props.reservations,
+                    mori.partial(mori.filter, function (reservation) {
+                        var reservationFromVal = moment(mori.get(reservation, "from")).valueOf();
+                        var reservationToVal = moment(mori.get(reservation, "to")).valueOf();
 
-                var booking = mori.get(reservation, "booking");
-                var bookingId = mori.get(booking, "id");
-                var user = mori.get(booking, "user");
+                        return reservationFromVal < dayEndVal && reservationToVal > dayStartVal;
+                    }),
+                    mori.partial(mori.sortBy, mori.curry(mori.get, "from")));
 
-                return React.DOM.div({
-                        key: "reservation-" + mori.get(reservation, "id"),
-                        className: "row",
-                        style: {marginBottom: "1em", paddingBottom: "1em", borderBottom: "1px solid #ccc"}
-                    },
-                    React.DOM.div({className: "col-xs-3"},
-                        React.DOM.div({className: "row"},
-                            React.DOM.div({className: "col-xs-6"}, fromDate),
-                            React.DOM.div({className: "col-xs-6"}, from.format("HH:mm"))),
-                        React.DOM.div({className: "row"},
-                            React.DOM.div({className: "col-xs-6"}, fromDate === toDate ? "" : toDate),
-                            React.DOM.div({className: "col-xs-6"}, to.format("HH:mm")))),
-                    React.DOM.div({className: "col-xs-8"},
-                        React.DOM.div({style: {fontWeight: "bold", fontSize: 16, lineHeight: 1.2}}, mori.get(user, "name")),
-                        React.DOM.div({style: {fontStyle: "italic", color: "#666", fontSize: 11}}, mori.get(reservation, "comment")),
-                        props.currentUserId === mori.get(user, "id") && React.DOM.a({
-                            onClick: function () { props.actions.deleteBooking(bookingId); },
-                            className: "btn btn-danger",
-                            style: {marginTop: "1em"}
-                        }, React.DOM.span({className: "glyphicon glyphicon-trash"}))));
-            }, mori.sortBy(mori.curry(mori.get, "from"), props.reservations))));
+                return React.DOM.div({key: "day-" + label},
+                    React.DOM.h2({
+                        style: {borderBottom: "1px solid #ccc"}
+                    }, day.format("dddd, DD.MM")),
+                    mori.isEmpty(reservationsForDay) && React.DOM.div({style: {color: "#999", fontStyle: "italic", textAlign: "center", padding: "1em"}}, "Ingen reservasjoner"),
+                    mori.toJs(mori.map(function (reservation) {
+                        var from = moment(Math.max(moment(mori.get(reservation, "from")).valueOf(), dayStartVal));
+                        var to = moment(Math.min(moment(mori.get(reservation, "to")).valueOf(), dayEndVal + 1000));
+
+                        var booking = mori.get(reservation, "booking");
+                        var user = mori.get(booking, "user");
+                        var bookingId = mori.get(booking, "id");
+
+                        return React.DOM.div(
+                            {
+                                key: "reservation-" + mori.get(reservation, "id"),
+                                className: "row",
+                                style: {marginBottom: "1em", paddingBottom: "1em", borderBottom: "1px solid #eee"}
+                            },
+                            React.DOM.div({className: "col-xs-3"},
+                                    React.DOM.div(null, from.format("HH:mm")),
+                                    React.DOM.div(null, to.format("HH:mm"))),
+                            React.DOM.div({className: "col-xs-9"},
+                                React.DOM.div({style: {fontWeight: "bold", fontSize: 16, lineHeight: 1.2}}, mori.get(user, "name")),
+                                React.DOM.div({style: {fontStyle: "italic", color: "#666", fontSize: 11}}, mori.get(reservation, "comment")),
+                                props.currentUserId === mori.get(user, "id") && React.DOM.a({
+                                    onClick: function () { props.actions.deleteBooking(bookingId); },
+                                    className: "btn btn-danger",
+                                    style: {marginTop: "1em"}
+                                }, React.DOM.span({className: "glyphicon glyphicon-trash"})))
+                        );
+                    }, reservationsForDay))
+                );
+            }, mori.get(props.calendar, "days"))));
     });
 
     var CalendarGridWeek = UTIL.createComponent(function CalendarGridWeek(props) {
@@ -367,6 +384,7 @@ var BOOKING_COMPONENTS = (function () {
                 dispatch: props.dispatch,
                 actions: props.actions,
                 reservations: props.reservations,
+                calendar: props.calendar,
                 currentUserId: props.currentUserId
             }),
             CalendarGridWeek({
